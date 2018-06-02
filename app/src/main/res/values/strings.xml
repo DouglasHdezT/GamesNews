@@ -1,3 +1,9 @@
 <resources>
     <string name="app_name">GamesNews</string>
+    <string name="app_title">Games News</string>
+    <string name="app_slogan">Keep alert</string>
+    <string name="username_login">Username</string>
+    <string name="password_login">Password</string>
+    <string name="sign_in_login">Sign in</string>
+    <string name="error_login_connect">We cant load your sesion</string>
 </resources>
