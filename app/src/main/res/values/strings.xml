@@ -12,4 +12,5 @@
     <string name="drawer_menu_news">News</string>
     <string name="drawer_menu_games">Games</string>
     <string name="error_empty_field">Empty field</string>
+    <string name="error_invalid_credentias">Invalid Credentials</string>
 </resources>

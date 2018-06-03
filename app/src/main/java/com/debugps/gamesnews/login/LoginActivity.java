@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -121,18 +122,27 @@ public class LoginActivity extends AppCompatActivity {
             @Override
             public void onSuccess(TokenAcceso value) {
                 token = value;
-                SharedPreferences sharedPreferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
-                SharedPreferences.Editor editor = sharedPreferences.edit();
-                editor.putString(SHARED_TOKEN_KEY, token.getToken());
-                editor.apply();
-                startMainActivity(token);
-                //Snackbar.make(mainView, token.getToken(), Snackbar.LENGTH_SHORT).show();
+
+                if(token.getToken() != null){
+                    SharedPreferences sharedPreferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.putString(SHARED_TOKEN_KEY, token.getToken());
+                    editor.apply();
+                    startMainActivity(token);
+                    //Log.i("Token", token.getToken());
+                }else{
+                    Snackbar.make(mainView, R.string.error_invalid_credentias, Snackbar.LENGTH_SHORT).show();
+                    username.setText("");
+                    password.setText("");
+                }
+
+
             }
 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-                Toast.makeText(LoginActivity.this, R.string.error_login_connect, Toast.LENGTH_SHORT).show();
+                Snackbar.make(mainView, R.string.error_login_connect, Snackbar.LENGTH_SHORT).show();
             }
         };
     }

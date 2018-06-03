@@ -1,7 +1,10 @@
 package com.debugps.gamesnews;
 
 import android.annotation.TargetApi;
+import android.content.Context;
 import android.content.Intent;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
 import android.support.v4.widget.DrawerLayout;
@@ -14,12 +17,13 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.interfaces.NetVerified;
 import com.debugps.gamesnews.login.LoginActivity;
 
 /**
  * Clase encargada del flujo principal, tanto logico como grafico, de toda la Aplicacion.
  */
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements NetVerified {
 
     private TokenAcceso token;
 
@@ -110,6 +114,14 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         };
+    }
+
+    @Override
+    public boolean isNetworkAvailable() {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 
 
