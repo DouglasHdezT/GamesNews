@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/drawer_menu_news"
+            android:title="@string/drawer_menu_news"/>
+
+        <item
+            xmlns:android="http://schemas.android.com/apk/res/android"
+            android:id="@+id/drawer_menu_games"
+            android:title="@string/drawer_menu_games">
+
+            <menu>
+                <group  android:checkableBehavior="single" android:menuCategory="container">
+                    <item
+                        android:id="@+id/item1"
+                        android:title="item 1"/>
+
+                    <item
+                        android:id="@+id/item2"
+                        android:title="item 2"/>
+
+                    <item
+                        android:id="@+id/item3"
+                        android:title="item 3"/>
+                </group>
+            </menu>
+
+
+        </item>
+
+
+
+    </group>
+</menu>

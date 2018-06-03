@@ -17,7 +17,6 @@ import com.debugps.gamesnews.R;
 import com.debugps.gamesnews.api.controler.GamesNewsApiLogin;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -50,7 +49,7 @@ public class LoginActivity extends AppCompatActivity {
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /**
-     * Metodo sobreescrito encargado de
+     * Metodo sobreescrito encargado del flujo principal de la actividad "Login"
      * @param savedInstanceState Bundle para la recuperacion de los datos al momento de cambiar configuraciones.
      */
     @Override
@@ -66,7 +65,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setContentView(R.layout.activity_login);
 
-        setResurcesUp();
+        setResourcesUp();
 
         gamesNewsApiLogin = createGamesNewsApi();
 
@@ -75,10 +74,15 @@ public class LoginActivity extends AppCompatActivity {
             public void onClick(View v) {
                 String username_txt = username.getText().toString();
                 String password_txt = password.getText().toString();
-                compositeDisposable.add(gamesNewsApiLogin.initLogin(username_txt,password_txt)
-                        .subscribeOn(Schedulers.io())
-                        .observeOn(AndroidSchedulers.mainThread())
-                        .subscribeWith(getTokenObserver()));
+
+                if(username_txt.equals("") || password_txt.equals("")){
+                    Snackbar.make(mainView, R.string.error_empty_field, Snackbar.LENGTH_SHORT).show();
+                }else{
+                    compositeDisposable.add(gamesNewsApiLogin.initLogin(username_txt,password_txt)
+                            .subscribeOn(Schedulers.io())
+                            .observeOn(AndroidSchedulers.mainThread())
+                            .subscribeWith(getTokenObserver()));
+                }
             }
         });
 
@@ -87,7 +91,7 @@ public class LoginActivity extends AppCompatActivity {
     /**
      * Metodo encargado de encontrar y asignar valores a los componentes de la UI
      */
-    private void setResurcesUp(){
+    private void setResourcesUp(){
         username = findViewById(R.id.edit_text_username_login);
         password = findViewById(R.id.edit_text_password_login);
         loginButton = findViewById(R.id.button_signin_login);
@@ -120,7 +124,7 @@ public class LoginActivity extends AppCompatActivity {
                 SharedPreferences sharedPreferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
                 SharedPreferences.Editor editor = sharedPreferences.edit();
                 editor.putString(SHARED_TOKEN_KEY, token.getToken());
-                editor.commit();
+                editor.apply();
                 startMainActivity(token);
                 //Snackbar.make(mainView, token.getToken(), Snackbar.LENGTH_SHORT).show();
             }

@@ -6,4 +6,10 @@
     <string name="password_login">Password</string>
     <string name="sign_in_login">Sign in</string>
     <string name="error_login_connect">We cant load your sesion</string>
+    <string name="main_menu_drawer_option">Drawer_option</string>
+    <string name="search_title">Search...</string>
+    <string name="main_menu_title">News</string>
+    <string name="drawer_menu_news">News</string>
+    <string name="drawer_menu_games">Games</string>
+    <string name="error_empty_field">Empty field</string>
 </resources>

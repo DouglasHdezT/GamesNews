@@ -90,7 +90,7 @@
         android:layout_margin="16dp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimaryDarkLogin"
+        android:background="@color/colorAccentLogin"
         android:text="@string/sign_in_login"
         />
 
