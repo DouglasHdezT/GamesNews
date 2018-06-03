@@ -5,6 +5,7 @@ import android.arch.persistence.room.Dao;
 import android.arch.persistence.room.Insert;
 import android.arch.persistence.room.OnConflictStrategy;
 import android.arch.persistence.room.Query;
+import android.arch.persistence.room.Update;
 
 import com.debugps.gamesnews.roomTools.POJO.New;
 
@@ -30,6 +31,13 @@ public interface NewDao {
     void deleteAllNews();
 
     /**
+     * Metodo para actualizar valores especificos en la tabla.
+     * @param new_var Noticia a actualizar.
+     */
+    @Update(onConflict = OnConflictStrategy.REPLACE)
+    void updateNew(New new_var);
+
+    /**
      * Metodo que recupera todas las noticias de la tabla new_table.
      * @return
      */
@@ -51,4 +59,10 @@ public interface NewDao {
     @Query("SELECT count(*) FROM new_table")
     LiveData<Double> getCantNews();
 
+    /**
+     * Metodo que devuelve todos los datos favoritos.
+     * @return
+     */
+    @Query("SELECT * FROM new_table WHERE favorited = 1")
+    LiveData<List<New>> getFavoritesNews();
 }

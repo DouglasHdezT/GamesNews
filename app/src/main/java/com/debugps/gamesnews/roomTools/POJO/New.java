@@ -34,6 +34,9 @@ public class New {
     @ColumnInfo(name = "createdDate")
     private String createdDate;
 
+    @ColumnInfo(name = "favorited")
+    private int favorited;
+
     @ColumnInfo(name = "__v")
     private int __v;
 
@@ -46,10 +49,11 @@ public class New {
      * @param game Juego al que pertenece la noticia.
      * @param coverImage URL de la imagen que representa la noticia.
      * @param description Breve descripcion de la noticia
-     * @param createdDate Fecha de creacion de la noticia. Formato YYYY-MM-DDThh:mm:ssZ
+     * @param createdDate Fecha de creacion de la noticia. Formato YYYY-MM-DDThh:mm:ss.ssssZ
+     * @param favorited Si la noticia es favorita; 0 false, 1 true.
      * @param __v Nuemero de version
      */
-    public New(@NonNull String _id, String title, String body, String game, String coverImage, String description, String createdDate, int __v) {
+    public New(@NonNull String _id, String title, String body, String game, String coverImage, String description, String createdDate, int favorited, int __v) {
         this._id = _id;
         this.title = title;
         this.body = body;
@@ -57,6 +61,7 @@ public class New {
         this.coverImage = coverImage;
         this.description = description;
         this.createdDate = createdDate;
+        this.favorited = favorited;
         this.__v = __v;
     }
 
@@ -124,5 +129,13 @@ public class New {
 
     public void set__v(int __v) {
         this.__v = __v;
+    }
+
+    public int getFavorited() {
+        return favorited;
+    }
+
+    public void setFavorited(int favorited) {
+        this.favorited = favorited;
     }
 }
