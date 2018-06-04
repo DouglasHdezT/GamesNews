@@ -13,4 +13,7 @@
     <string name="drawer_menu_games">Games</string>
     <string name="error_empty_field">Empty field</string>
     <string name="error_invalid_credentias">Invalid Credentials</string>
+    <string name="drawer_menu_profile">Profile</string>
+    <string name="drawer_menu_fav">Favorites</string>
+    <string name="drawer_menu_settings">Settings</string>
 </resources>

@@ -41,7 +41,7 @@ public interface NewDao {
      * Metodo que recupera todas las noticias de la tabla new_table.
      * @return
      */
-    @Query("SELECT * FROM new_table ORDER BY createdDate ASC")
+    @Query("SELECT * FROM new_table ORDER BY createdDate DESC")
     LiveData<List<New>> getAllNews();
 
     /**
@@ -49,7 +49,7 @@ public interface NewDao {
      * @param game_name Nombre del juego a buscar.
      * @return
      */
-    @Query("SELECT * FROM new_table WHERE game = :game_name ORDER BY createdDate ASC")
+    @Query("SELECT * FROM new_table WHERE game = :game_name ORDER BY createdDate DESC")
     LiveData<List<New>> getNewsFromGame(String game_name);
 
     /**

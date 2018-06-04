@@ -34,6 +34,17 @@ public interface GamesNewsApi {
     @FormUrlEncoded
     Single<TokenAcceso> initLogin(@Field("user") String user, @Field("password") String password );
 
+    /**
+     * Metodo utilizado para sacar todos las noticias de la API.
+     * @return Lista de noticias.
+     */
     @GET("/news")
     Single<List<NewDataAPI>> getAllNews();
+
+    /**
+     * Obtiene todos las categorias de juegos.
+     * @return Lista de Strings con las categorias.
+     */
+    @GET("/news/type/list")
+    Single<List<String>> getListTypeGames();
 }
