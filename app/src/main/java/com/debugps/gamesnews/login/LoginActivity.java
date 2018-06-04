@@ -6,16 +6,14 @@ import android.content.SharedPreferences;
 import android.support.design.widget.Snackbar;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
-import android.widget.Toast;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.R;
-import com.debugps.gamesnews.api.controler.GamesNewsApiLogin;
+import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -46,7 +44,7 @@ public class LoginActivity extends AppCompatActivity {
     private Button loginButton;
     private LinearLayout mainView;
 
-    private GamesNewsApiLogin gamesNewsApiLogin;
+    private GamesNewsApi gamesNewsApi;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /**
@@ -68,7 +66,7 @@ public class LoginActivity extends AppCompatActivity {
 
         setResourcesUp();
 
-        gamesNewsApiLogin = createGamesNewsApi();
+        gamesNewsApi = createGamesNewsApi();
 
         loginButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -79,7 +77,7 @@ public class LoginActivity extends AppCompatActivity {
                 if(username_txt.equals("") || password_txt.equals("")){
                     Snackbar.make(mainView, R.string.error_empty_field, Snackbar.LENGTH_SHORT).show();
                 }else{
-                    compositeDisposable.add(gamesNewsApiLogin.initLogin(username_txt,password_txt)
+                    compositeDisposable.add(gamesNewsApi.initLogin(username_txt,password_txt)
                             .subscribeOn(Schedulers.io())
                             .observeOn(AndroidSchedulers.mainThread())
                             .subscribeWith(getTokenObserver()));
@@ -101,16 +99,16 @@ public class LoginActivity extends AppCompatActivity {
 
     /**
      *Metodo encargado de crear el cliente que conecte la API para la autentificacion en el login.
-     * @return Devuevle la instancia de un GamesNewsApiLogin.
+     * @return Devuevle la instancia de un GamesNewsApi.
      */
-    private GamesNewsApiLogin createGamesNewsApi(){
+    private GamesNewsApi createGamesNewsApi(){
         Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GamesNewsApiLogin.ENDPOINT)
+                .baseUrl(GamesNewsApi.ENDPOINT)
                 .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
                 .addConverterFactory(GsonConverterFactory.create())
                 .build();
 
-        return retrofit.create(GamesNewsApiLogin.class);
+        return retrofit.create(GamesNewsApi.class);
     }
 
     /**

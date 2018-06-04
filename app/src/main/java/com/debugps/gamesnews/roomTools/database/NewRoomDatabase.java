@@ -30,7 +30,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
         if (INSTANCE == null) {
             synchronized (NewRoomDatabase.class) {
                 if (INSTANCE == null) {
-                    netVerified = (NetVerified) context;
+                    //netVerified = (NetVerified) context;
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             NewRoomDatabase.class, "news_database")
                             .addCallback(sNewRoomDatabaseCallback)
@@ -56,9 +56,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
                 @Override
                 public void onOpen(@NonNull SupportSQLiteDatabase db) {
                     super.onOpen(db);
-                    if(netVerified.isNetworkAvailable()){
-                        new DeleteAsyncTask(INSTANCE).execute();
-                    }
+                    new DeleteAsyncTask(INSTANCE).execute();
                 }
             };
 

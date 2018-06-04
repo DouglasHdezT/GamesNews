@@ -55,12 +55,43 @@ public class New {
      */
     public New(@NonNull String _id, String title, String body, String game, String coverImage, String description, String createdDate, int favorited, int __v) {
         this._id = _id;
-        this.title = title;
-        this.body = body;
-        this.game = game;
-        this.coverImage = coverImage;
-        this.description = description;
-        this.createdDate = createdDate;
+
+        if(title == null){
+            this.title = "";
+        }else{
+            this.title = title;
+        }
+
+        if(body == null){
+            this.body = "";
+        }else{
+            this.body = body;
+        }
+
+        if(game == null){
+            this.game = "";
+        }else{
+            this.game = game;
+        }
+
+        if(coverImage == null){
+            this.coverImage = "";
+        }else{
+            this.coverImage = coverImage;
+        }
+
+        if(description == null){
+            this.description = "";
+        }else{
+            this.description = description;
+        }
+
+        if(createdDate == null){
+            this.createdDate = "";
+        }else{
+            this.createdDate = createdDate;
+        }
+
         this.favorited = favorited;
         this.__v = __v;
     }

@@ -4,11 +4,32 @@ import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
 
+import com.debugps.gamesnews.MainActivity;
+import com.debugps.gamesnews.api.controler.GamesNewsApi;
+import com.debugps.gamesnews.api.data.NewDataAPI;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.List;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableCompletableObserver;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.Credentials;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Clase de tipo repositorio con el fin de intermediar al usuario con el contacto en la base de datos.
@@ -19,6 +40,9 @@ public class NewRepository {
     private LiveData<Double> cant_news;
     private LiveData<List<New>> mAllNews;
     private LiveData<List<New>> newsPerGame;
+
+    private GamesNewsApi gamesNewsApi;
+    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
     /**
      * Constructor que intancia la base de datos y los campos LiveData.
@@ -31,6 +55,8 @@ public class NewRepository {
 
         cant_news = newDao.getCantNews();
         mAllNews = newDao.getAllNews();
+
+        gamesNewsApi = createGamesNewApi();
     }
 
     /**
@@ -38,6 +64,11 @@ public class NewRepository {
      * @return Lista de todas las news.
      */
     public LiveData<List<New>> getmAllNews() {
+        compositeDisposable.add(gamesNewsApi.getAllNews()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getNewsObserver()));
+
         return mAllNews;
     }
 
@@ -50,7 +81,7 @@ public class NewRepository {
     }
 
     /**
-     * Wrapper entre el Dao y el usuario, para una lsita especifica.
+     * Wrapper entre el Dao y el usuario, para una lista especifica.
      * @param name Nombre del juego especifico.
      * @return Lista de noticias por juego.
      */
@@ -89,19 +120,10 @@ public class NewRepository {
 
         private NewDao mAsyncNewDao;
 
-        /**
-         * Constructor de la clase asincrona.
-         * @param newDao DAO de control de QUERYS.
-         */
         private InsertAsyncTask(NewDao newDao){
             mAsyncNewDao = newDao;
         }
 
-        /**
-         * Metodo para realizar los ingresos de noticias en Backend.
-         * @param params Arrego de noticias; siempre viene solo 1.
-         * @return Nada.
-         */
         @Override
         protected Void doInBackground(New... params) {
             mAsyncNewDao.insertNew(params[0]);
@@ -116,19 +138,10 @@ public class NewRepository {
 
         private NewDao mAsyncNewDao;
 
-        /**
-         * Constructor de la clase asincrona.
-         * @param newDao DAO de control de QUERYS.
-         */
         private UpdateAsyncTask(NewDao newDao){
             mAsyncNewDao = newDao;
         }
 
-        /**
-         * Metodo para realizar las actualizaciones de noticias en Backend.
-         * @param params Arrego de noticias; siempre viene solo 1.
-         * @return Nada.
-         */
         @Override
         protected Void doInBackground(New... params) {
             mAsyncNewDao.updateNew(params[0]);
@@ -143,23 +156,76 @@ public class NewRepository {
 
         private final NewDao mNewDao;
 
-        /**
-         * Constructor de la instancia Asincrona
-         * @param mNewDao Dao de control
-         */
         private DeleteAsyncTask(NewDao mNewDao) {
             this.mNewDao = mNewDao;
         }
 
-        /**
-         * Metodo implementado para realizar la eliminacion de datos en Backend
-         * @param voids Nada
-         * @return Nada
-         */
         @Override
         protected Void doInBackground(Void... voids) {
             mNewDao.deleteAllNews();
             return null;
         }
+    }
+
+    /**
+     * Metodo que instancia la API para realizar las peticiones.
+     * @return GamesNewsAPI para realizar peticiones
+     */
+    private GamesNewsApi createGamesNewApi(){
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request originalRequest = chain.request();
+
+                        Request.Builder builder = originalRequest.newBuilder()
+                                .addHeader("Authorization", "Bearer " + MainActivity.token_var);
+
+                        Request newRequest = builder.build();
+                        return chain.proceed(newRequest);
+                    }
+                }).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(GamesNewsApi.ENDPOINT)
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        return retrofit.create(GamesNewsApi.class);
+    }
+
+    /**
+     * Metodo que devuelve un observer que reacciona ante respuestas de la API  en el ambito de listas de News
+     * @return Observer a implementar
+     */
+    private DisposableSingleObserver<List<NewDataAPI>> getNewsObserver(){
+        return new DisposableSingleObserver<List<NewDataAPI>>() {
+            @Override
+            public void onSuccess(List<NewDataAPI> news_list) {
+                for(NewDataAPI new_var: news_list){
+                    insertNew(new New(
+                            new_var.getId(),
+                            new_var.getTitle(),
+                            new_var.getBody(),
+                            new_var.getGame(),
+                            new_var.getCoverImage(),
+                            new_var.getDescription(),
+                            new_var.getCreatedDate(),
+                            0,
+                            new_var.get__v()));
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                e.printStackTrace();
+            }
+        };
     }
 }

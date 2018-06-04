@@ -1,10 +1,14 @@
 package com.debugps.gamesnews.api.controler;
 
+import com.debugps.gamesnews.api.data.NewDataAPI;
 import com.debugps.gamesnews.api.data.TokenAcceso;
+
+import java.util.List;
 
 import io.reactivex.Single;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
+import retrofit2.http.GET;
 import retrofit2.http.POST;
 
 
@@ -13,7 +17,7 @@ import retrofit2.http.POST;
  * Interfaz encargada de realizar las peticiones a la API GameNewUca. Sera de caracter general para todas las clases.
  * Se hara uso de el Framework Retrofit para dicho cometido.
  */
-public interface GamesNewsApiLogin {
+public interface GamesNewsApi {
 
     /**
      * Campo que define de forma estatica la ruta principal en la web de la API.
@@ -29,4 +33,7 @@ public interface GamesNewsApiLogin {
     @POST("/login")
     @FormUrlEncoded
     Single<TokenAcceso> initLogin(@Field("user") String user, @Field("password") String password );
+
+    @GET("/news")
+    Single<List<NewDataAPI>> getAllNews();
 }

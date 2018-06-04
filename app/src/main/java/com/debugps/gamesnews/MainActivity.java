@@ -7,6 +7,7 @@ import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Build;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
@@ -17,6 +18,7 @@ import android.widget.SearchView;
 import android.widget.TextView;
 
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.interfaces.NetVerified;
 import com.debugps.gamesnews.login.LoginActivity;
 
@@ -25,7 +27,7 @@ import com.debugps.gamesnews.login.LoginActivity;
  */
 public class MainActivity extends AppCompatActivity implements NetVerified {
 
-    private TokenAcceso token;
+    public static String token_var = "";
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -40,13 +42,18 @@ public class MainActivity extends AppCompatActivity implements NetVerified {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        token = getIntent().getParcelableExtra(LoginActivity.SHARED_TOKEN_KEY);
+        TokenAcceso token = getIntent().getParcelableExtra(LoginActivity.SHARED_TOKEN_KEY);
 
         if(token ==  null){
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        }else{
+            token_var = token.getToken();
         }
 
+
         setResourcesUp();
+
+
     }
 
     /**
@@ -55,6 +62,11 @@ public class MainActivity extends AppCompatActivity implements NetVerified {
     @Override
     protected void onResume() {
         super.onResume();
+
+        NewsMainFragment newsMainFragment = new NewsMainFragment();
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_activity_frame_layout, newsMainFragment);
+        ft.commit();
 
     }
 
@@ -116,6 +128,10 @@ public class MainActivity extends AppCompatActivity implements NetVerified {
         };
     }
 
+    /**
+     * Metodo implementado de la interfaz para verificar si existe internet
+     * @return Boolenao para verificar si existe internet o no.
+     */
     @Override
     public boolean isNetworkAvailable() {
         ConnectivityManager connectivityManager
