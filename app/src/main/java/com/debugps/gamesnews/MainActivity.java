@@ -1,6 +1,7 @@
 package com.debugps.gamesnews;
 
 import android.arch.lifecycle.Observer;
+import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -9,6 +10,7 @@ import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
@@ -28,7 +30,9 @@ import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.interfaces.NetVerified;
 import com.debugps.gamesnews.login.LoginActivity;
+import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.New;
+import com.debugps.gamesnews.roomTools.viewModels.CategoryViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -59,16 +63,16 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
-    private NavigationView navigationView;
+    protected NavigationView navigationView;
 
     private MainAdapter mainAdapter;
     private List<New> newList_main;
-    private List<String> games_names;
+    private ArrayList<String> games_names = new ArrayList<>();
     private ArrayList<String> styled_names;
 
     private NewViewModel newViewModel;
+    private CategoryViewModel categoryViewModel;
     private GamesNewsApi gamesNewsApi;
-    private CompositeDisposable games_list_composite_disposable = new CompositeDisposable();
 
     /**
      * Metodo encargado de la creacion y asignacion de valores a los componentes, logicos y graficos, en la actividad Main.
@@ -93,11 +97,8 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
         gamesNewsApi = createGamesNewApi();
 
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
+        categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
-        games_list_composite_disposable.add(gamesNewsApi.getListTypeGames()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(getGamesObserver()));
     }
 
     /**
@@ -117,6 +118,21 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
             public void onChanged(@Nullable List<New> news) {
                 mainAdapter.setNewList(news);
                 newList_main = news;
+            }
+        });
+
+        categoryViewModel.getCategoriesList().observe(this, new Observer<List<Category>>() {
+            @Override
+            public void onChanged(@Nullable List<Category> categories) {
+                Log.d("String ", categories.size()+"");
+                if(categories.size() != 0){
+                    games_names.clear();
+                    for(int i = 0; i< categories.size(); i++){
+                        games_names.add(categories.get(i).getCategory());
+                    }
+
+                    setDrawerItemsUp();
+                }
             }
         });
 
@@ -198,8 +214,10 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
 
         SubMenu subMenu = MI.getSubMenu();
         subMenu.clear();
-        for(int i = 0; i < games_names.size(); i++){
-            subMenu.add(R.id.group_games, ID_ITEM_MENU_GAMES+i, i, styled_names.get(i));
+        subMenu.setGroupCheckable(R.id.group_games, true, true);
+        for(int i = 0; i < games_names.size(); i++) {
+            subMenu.add(R.id.group_games, ID_ITEM_MENU_GAMES + i, i, styled_names.get(i))
+                    .setCheckable(true).setIcon(R.drawable.ic_game);
         }
 
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
@@ -207,7 +225,8 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
                 switch (item.getItemId()){
                     case R.id.drawer_menu_news:
-                        Log.d("Name", "News");
+                        setUpMainFragment(new NewsMainFragment());
+                        //Log.d("Name", "News");
                         break;
                     case R.id.drawer_menu_fav:
                         Log.d("Name", "Fav");
@@ -219,7 +238,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
                         for(int i=0; i<games_names.size(); i++){
                             if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
                                 Log.d("Name", games_names.get(i));
-                                Log.d("Name", styled_names.get(i));
                             }
                         }
                         break;
@@ -234,7 +252,7 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
      * @param names Lista de nombres de la API
      * @return Lista de nombres estilizados.
      */
-    private ArrayList<String> getPreferedNames(List<String> names){
+    private ArrayList<String> getPreferedNames(ArrayList<String> names){
         ArrayList<String> result = new ArrayList<>();
         for (int i = 0; i < names.size(); i++){
             switch (names.get(i)){
@@ -253,6 +271,16 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
             }
         }
         return result;
+    }
+
+    /**
+     * Metodo que reemplaza el fragmento pricipal dentro del main activity
+     * @param fragment Fragmento a reemplazar.
+     */
+    private void setUpMainFragment(Fragment fragment){
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_activity_frame_layout, fragment);
+        ft.commit();
     }
 
     /**
@@ -308,24 +336,5 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
                 .build();
 
         return retrofit.create(GamesNewsApi.class);
-    }
-
-    /**
-     * Metodo que devuelve un observer que reacciona ante respuestas de la API  en el ambito de las categorias de los juegos
-     * @return Observer a implementar
-     */
-    private DisposableSingleObserver<List<String>> getGamesObserver(){
-        return new DisposableSingleObserver<List<String>>() {
-            @Override
-            public void onSuccess(List<String> value) {
-                games_names = value;
-                setDrawerItemsUp();
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                e.printStackTrace();
-            }
-        };
     }
 }

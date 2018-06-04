@@ -3,6 +3,7 @@
 
     <group android:checkableBehavior="single">
         <item
+            android:icon="@drawable/ic_newspaper"
             android:id="@+id/drawer_menu_news"
             android:title="@string/drawer_menu_news"/>
         <item
@@ -22,10 +23,12 @@
             android:title="@string/drawer_menu_profile">
             <menu>
                 <group android:checkableBehavior="single">
-                    <item android:id="@+id/drawer_menu_fav"
+                    <item android:icon="@drawable/ic_favorite"
+                        android:id="@+id/drawer_menu_fav"
                         android:title="@string/drawer_menu_fav"
                         />
-                    <item android:id="@+id/drawer_menu_settings"
+                    <item android:icon="@drawable/ic_settings"
+                        android:id="@+id/drawer_menu_settings"
                         android:title="@string/drawer_menu_settings"
                         />
                 </group>

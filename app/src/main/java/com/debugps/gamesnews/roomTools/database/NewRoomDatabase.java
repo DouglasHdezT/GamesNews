@@ -9,13 +9,15 @@ import android.os.AsyncTask;
 import android.support.annotation.NonNull;
 
 import com.debugps.gamesnews.interfaces.NetVerified;
+import com.debugps.gamesnews.roomTools.DAO.CategoryDAO;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
+import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.New;
 
 /**
  * Clase encargada de Instanciar la base de datos para la App
  */
-@Database(entities = {New.class}, version = 1)
+@Database(entities = {New.class, Category.class}, version = 2)
 public abstract class NewRoomDatabase extends RoomDatabase {
 
     private static NewRoomDatabase INSTANCE;
@@ -31,6 +33,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context.getApplicationContext(),
                             NewRoomDatabase.class, "news_database")
+                            .fallbackToDestructiveMigration()
                             .build();
 
                 }
@@ -44,5 +47,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
      * @return Devuelve un NewDao para el control de QUERYS.
      */
     public abstract NewDao newDao();
+
+    public abstract CategoryDAO categoryDAO();
 
 }
