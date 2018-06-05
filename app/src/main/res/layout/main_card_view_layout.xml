@@ -1,59 +1,87 @@
 <?xml version="1.0" encoding="utf-8"?>
 <android.support.v7.widget.CardView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main_card_vew"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
+    android:layout_height="150dp"
     app:cardCornerRadius="2dp"
     app:cardUseCompatPadding="true"
-    app:cardElevation="7dp">
+    app:cardElevation="3dp">
 
-    <LinearLayout
-        android:orientation="vertical"
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="match_parent">
 
-        <TextView
-            android:id="@+id/cardtitle"
-            android:layout_marginBottom="16dp"
+        <ImageView
+            android:id="@+id/main_card_vew_image"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:src="@drawable/ic_game_white"
+            android:scaleType="centerCrop"
+            android:background="@color/MaterialCyan900"
             />
 
         <TextView
-            android:id="@+id/carddesc"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
+            android:id="@+id/main_card_vew_game"
+            android:background="#a0000000"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:textColor="@android:color/white"
+            android:textAllCaps="true"
+            android:textSize="10sp"
+            android:padding="4dp"
+            android:layout_margin="8dp"
+            android:text="@string/game_text"
             />
 
-        <TextView
-            android:id="@+id/cardcover"
-            android:layout_marginBottom="16dp"
+        <LinearLayout
+            android:orientation="vertical"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1"/>
+
+            <LinearLayout
+                android:background="#a0000000"
+                android:orientation="vertical"
+                android:layout_width="match_parent"
+                android:layout_height="0dp"
+                android:layout_weight="1.25">
+
+                <TextView
+                    android:id="@+id/main_card_vew_title"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|fill_horizontal"
+                    android:layout_marginLeft="8dp"
+                    android:layout_marginRight="8dp"
+                    android:layout_marginBottom="4dp"
+                    android:layout_marginTop="4dp"
+                    android:textColor="@android:color/white"
+                    android:text="@string/new_title_text"
+                    android:textSize="14sp"
+                    android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+                    />
+
+            </LinearLayout>
+
+        </LinearLayout>
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/main_card_vew_favorited"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_alignParentBottom="true"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_margin="12dp"
+            android:src="@drawable/ic_fav_red"
+            app:civ_circle_background_color="@android:color/white"
             />
 
-        <TextView
-            android:id="@+id/cardbody"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <TextView
-            android:id="@+id/carddate"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-        <TextView
-            android:id="@+id/cardgame"
-            android:layout_marginBottom="16dp"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            />
-
-    </LinearLayout>
+    </RelativeLayout>
 
 </android.support.v7.widget.CardView>

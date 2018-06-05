@@ -40,6 +40,7 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Random;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -60,6 +61,7 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
 
     public static String token_var = "";
     private final static int ID_ITEM_MENU_GAMES = 101010;
+    private static final Random rn = new Random();
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -124,13 +126,12 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
         categoryViewModel.getCategoriesList().observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(@Nullable List<Category> categories) {
-                Log.d("String ", categories.size()+"");
-                if(categories.size() != 0){
+                //Log.d("String ", categories.size()+"");
+                if (categories != null && categories.size() != 0) {
                     games_names.clear();
-                    for(int i = 0; i< categories.size(); i++){
+                    for (int i = 0; i < categories.size(); i++) {
                         games_names.add(categories.get(i).getCategory());
                     }
-
                     setDrawerItemsUp();
                 }
             }
@@ -180,9 +181,9 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
         navigationView =  findViewById(R.id.main_navigation_view);
 
         toolbar = findViewById(R.id.main_toolbar);
+        toolbar.setTitle(R.string.main_menu_title);
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu);
-        toolbar.setTitle(R.string.main_menu_title);
         toolbar.setNavigationOnClickListener(drawerButtonListener());
     }
 
@@ -223,20 +224,28 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if(item.isChecked()){
+                    return true;
+                }
+                drawerLayout.closeDrawers();
                 switch (item.getItemId()){
                     case R.id.drawer_menu_news:
                         setUpMainFragment(new NewsMainFragment());
+                        toolbar.setTitle(R.string.main_menu_title);
                         //Log.d("Name", "News");
                         break;
                     case R.id.drawer_menu_fav:
                         Log.d("Name", "Fav");
+                        toolbar.setTitle(R.string.main_menu_fav);
                         break;
                     case R.id.drawer_menu_settings:
                         Log.d("Name", "Settings");
+                        toolbar.setTitle(R.string.main_menu_settings);
                         break;
                     default:
                         for(int i=0; i<games_names.size(); i++){
                             if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
+                                toolbar.setTitle(styled_names.get(i));
                                 Log.d("Name", games_names.get(i));
                             }
                         }
@@ -336,5 +345,71 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
                 .build();
 
         return retrofit.create(GamesNewsApi.class);
+    }
+
+    /**
+     * Generador de colores al azar entre la paleta 700 Material Design
+     * @return Id del color generado
+     */
+    public static int getColorId(){
+        //Random rn2 = new Random();
+        int rnNumber = Math.abs((rn.nextInt() % 17)) + 1;
+        int idColor=R.color.MaterialDeepPurple900;
+
+        switch (rnNumber){
+            case 1:
+                idColor = R.color.MaterialBlue900;
+                break;
+            case 2:
+                idColor = R.color.MaterialRed900;
+                break;
+            case 3:
+                idColor = R.color.MaterialPurple900;
+                break;
+            case 4:
+                idColor = R.color.MaterialBlueGrey900;
+                break;
+            case 5:
+                idColor = R.color.MaterialCyan900;
+                break;
+            case 6:
+                idColor = R.color.MaterialIndigo900;
+                break;
+            case 7:
+                idColor = R.color.MaterialLime900;
+                break;
+            case 8:
+                idColor = R.color.MaterialBrown900;
+                break;
+            case 9:
+                idColor = R.color.MaterialOrange900;
+                break;
+            case 10:
+                idColor = R.color.MaterialPink900;
+                break;
+            case 11:
+                idColor = R.color.MaterialTeal900;
+                break;
+            case 12:
+                idColor = R.color.MaterialLightGreen900;
+                break;
+            case 13:
+                idColor = R.color.MaterialLightBlue900;
+                break;
+            case 14:
+                idColor = R.color.MaterialDeepPurple900;
+                break;
+            case 15:
+                idColor = R.color.MaterialDeepOrange900;
+                break;
+            case 16:
+                idColor = R.color.MaterialGrey900;
+                break;
+            case 17:
+                idColor = R.color.MaterialGreen900;
+                break;
+        }
+
+        return idColor;
     }
 }

@@ -4,6 +4,7 @@
     <group android:checkableBehavior="single">
         <item
             android:icon="@drawable/ic_newspaper"
+            android:checked="true"
             android:id="@+id/drawer_menu_news"
             android:title="@string/drawer_menu_news"/>
         <item
@@ -14,7 +15,6 @@
                 <group android:id="@+id/group_games"
                     android:checkableBehavior="single">
                 </group>
-
             </menu>
         </item>
         <item
