@@ -24,6 +24,13 @@ import java.util.List;
 
 public class NewsMainFragment extends Fragment {
     private MainTools tools;
+    private MainAdapter mainAdapter;
+
+    public static NewsMainFragment newInstance(MainAdapter mainAdapter){
+        NewsMainFragment fragment = new NewsMainFragment();
+        fragment.setMainAdapter(mainAdapter);
+        return fragment;
+    }
 
     @Nullable
     @Override
@@ -37,20 +44,32 @@ public class NewsMainFragment extends Fragment {
         manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
             public int getSpanSize(int position) {
-                if(position%3 == 0){
+                if(position%5 == 0){
                     return 9;
                 }else{
-                    if(position%3 == 1){
+                    if(position%5 == 1){
                         if(position%2 == 0){
                             return 4;
                         }else{
                             return 5;
                         }
-                    }else{
+                    }else if(position%5 == 2){
                         if(position%2 == 0){
                             return 4;
                         }else{
                             return 5;
+                        }
+                    }else if(position%5 == 3){
+                        if(position%2 == 0){
+                            return 5;
+                        }else{
+                            return 4;
+                        }
+                    }else{
+                        if(position%2 == 0){
+                            return 5;
+                        }else{
+                            return 4;
                         }
                     }
                 }
@@ -58,7 +77,7 @@ public class NewsMainFragment extends Fragment {
         });
 
         rv.setLayoutManager(manager);
-        tools.bindMainAdapter(rv);
+        rv.setAdapter(mainAdapter);
 
         return view;
     }
@@ -79,5 +98,9 @@ public class NewsMainFragment extends Fragment {
 
     public interface MainTools{
         void bindMainAdapter(RecyclerView rv);
+    }
+
+    public void setMainAdapter(MainAdapter mainAdapter) {
+        this.mainAdapter = mainAdapter;
     }
 }

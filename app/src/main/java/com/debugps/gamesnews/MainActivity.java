@@ -28,6 +28,7 @@ import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.fragment.NewsMainFragment;
+import com.debugps.gamesnews.fragment.NewsPerGameFragment;
 import com.debugps.gamesnews.interfaces.NetVerified;
 import com.debugps.gamesnews.login.LoginActivity;
 import com.debugps.gamesnews.roomTools.POJO.Category;
@@ -101,6 +102,11 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
 
+        toolbar.setTitle(R.string.main_menu_title);
+        NewsMainFragment newsMainFragment = NewsMainFragment.newInstance(mainAdapter);
+        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+        ft.replace(R.id.main_activity_frame_layout, newsMainFragment);
+        ft.commit();
     }
 
     /**
@@ -109,11 +115,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
     @Override
     protected void onResume() {
         super.onResume();
-
-        NewsMainFragment newsMainFragment = new NewsMainFragment();
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_activity_frame_layout, newsMainFragment);
-        ft.commit();
 
         newViewModel.getAllNews().observe(this, new Observer<List<New>>() {
             @Override
@@ -230,23 +231,24 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()){
                     case R.id.drawer_menu_news:
-                        setUpMainFragment(new NewsMainFragment());
+                        setUpMainFragment(NewsMainFragment.newInstance(mainAdapter));
                         toolbar.setTitle(R.string.main_menu_title);
                         //Log.d("Name", "News");
                         break;
                     case R.id.drawer_menu_fav:
-                        Log.d("Name", "Fav");
                         toolbar.setTitle(R.string.main_menu_fav);
+                        //Log.d("Name", "Fav");
                         break;
                     case R.id.drawer_menu_settings:
-                        Log.d("Name", "Settings");
                         toolbar.setTitle(R.string.main_menu_settings);
+                        //Log.d("Name", "Settings");
                         break;
                     default:
                         for(int i=0; i<games_names.size(); i++){
                             if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
                                 toolbar.setTitle(styled_names.get(i));
-                                Log.d("Name", games_names.get(i));
+                                setUpMainFragment(NewsPerGameFragment.newInstance(games_names.get(i)));
+                                //Log.d("Name", games_names.get(i));
                             }
                         }
                         break;

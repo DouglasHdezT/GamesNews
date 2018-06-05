@@ -68,6 +68,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         if(!newList.get(position).getCoverImage().equals("")){
             holder.coverImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
             Picasso.get().load(newList.get(position).getCoverImage())
+                    .error(R.drawable.ic_game_white)
                     .into(holder.coverImage);
         }else{
             holder.coverImage.setScaleType(ImageView.ScaleType.FIT_CENTER);
