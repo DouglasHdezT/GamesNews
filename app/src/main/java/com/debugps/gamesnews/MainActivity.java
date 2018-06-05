@@ -75,7 +75,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified{
 
     private NewViewModel newViewModel;
     private CategoryViewModel categoryViewModel;
-    private GamesNewsApi gamesNewsApi;
 
     /**
      * Metodo encargado de la creacion y asignacion de valores a los componentes, logicos y graficos, en la actividad Main.
@@ -96,8 +95,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified{
 
         setResourcesUp();
         setAdaptersUp();
-
-        gamesNewsApi = createGamesNewApi();
 
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
@@ -304,40 +301,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified{
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    /**
-     * Metodo que instancia la API para realizar las peticiones.
-     * @return GamesNewsAPI para realizar peticiones
-     */
-    private GamesNewsApi createGamesNewApi(){
-        Gson gson = new GsonBuilder()
-                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
-                .create();
-
-        OkHttpClient okHttpClient = new OkHttpClient.Builder()
-                .addInterceptor(new Interceptor() {
-                    @Override
-                    public Response intercept(Chain chain) throws IOException {
-                        Request originalRequest = chain.request();
-
-                        Log.d("Token ", MainActivity.token_var);
-                        Request.Builder builder = originalRequest.newBuilder()
-                                .addHeader("Authorization", "Bearer " + MainActivity.token_var);
-
-                        Request newRequest = builder.build();
-                        return chain.proceed(newRequest);
-                    }
-                }).build();
-
-        Retrofit retrofit = new Retrofit.Builder()
-                .baseUrl(GamesNewsApi.ENDPOINT)
-                .client(okHttpClient)
-                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
-                .addConverterFactory(GsonConverterFactory.create(gson))
-                .build();
-
-        return retrofit.create(GamesNewsApi.class);
     }
 
     /**
