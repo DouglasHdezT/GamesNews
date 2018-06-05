@@ -58,7 +58,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 /**
  * Clase encargada del flujo principal, tanto logico como grafico, de toda la Aplicacion.
  */
-public class MainActivity extends AppCompatActivity implements NetVerified, NewsMainFragment.MainTools{
+public class MainActivity extends AppCompatActivity implements NetVerified{
 
     public static String token_var = "";
     private final static int ID_ITEM_MENU_GAMES = 101010;
@@ -304,15 +304,6 @@ public class MainActivity extends AppCompatActivity implements NetVerified, News
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
-    }
-
-    /**
-     * Metodo utilizado para settear de manera local el adaptador del recycler en el MainFragment
-     * @param rv RecyclerView a settear
-     */
-    @Override
-    public void bindMainAdapter(RecyclerView rv) {
-        rv.setAdapter(mainAdapter);
     }
 
     /**

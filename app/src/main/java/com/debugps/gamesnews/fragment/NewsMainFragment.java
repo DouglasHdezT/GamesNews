@@ -23,7 +23,6 @@ import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import java.util.List;
 
 public class NewsMainFragment extends Fragment {
-    private MainTools tools;
     private MainAdapter mainAdapter;
 
     public static NewsMainFragment newInstance(MainAdapter mainAdapter){
@@ -80,24 +79,6 @@ public class NewsMainFragment extends Fragment {
         rv.setAdapter(mainAdapter);
 
         return view;
-    }
-
-    @Override
-    public void onAttach(Context context) {
-        super.onAttach(context);
-        if(context instanceof MainTools){
-            tools = (MainTools) context;
-        }
-    }
-
-    @Override
-    public void onDetach() {
-        super.onDetach();
-        tools = null;
-    }
-
-    public interface MainTools{
-        void bindMainAdapter(RecyclerView rv);
     }
 
     public void setMainAdapter(MainAdapter mainAdapter) {
