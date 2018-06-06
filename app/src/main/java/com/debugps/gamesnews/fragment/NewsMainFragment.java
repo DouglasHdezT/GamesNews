@@ -19,6 +19,7 @@ import com.debugps.gamesnews.R;
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
+import com.debugps.gamesnews.tools.CustomGridLayoutManager;
 
 import java.util.List;
 
@@ -38,42 +39,7 @@ public class NewsMainFragment extends Fragment {
 
         RecyclerView rv = view.findViewById(R.id.main_recycler_view);
 
-        GridLayoutManager manager = new GridLayoutManager(this.getContext(),9 );
-
-        manager.setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
-            @Override
-            public int getSpanSize(int position) {
-                if(position%5 == 0){
-                    return 9;
-                }else{
-                    if(position%5 == 1){
-                        if(position%2 == 0){
-                            return 4;
-                        }else{
-                            return 5;
-                        }
-                    }else if(position%5 == 2){
-                        if(position%2 == 0){
-                            return 4;
-                        }else{
-                            return 5;
-                        }
-                    }else if(position%5 == 3){
-                        if(position%2 == 0){
-                            return 5;
-                        }else{
-                            return 4;
-                        }
-                    }else{
-                        if(position%2 == 0){
-                            return 5;
-                        }else{
-                            return 4;
-                        }
-                    }
-                }
-            }
-        });
+        CustomGridLayoutManager manager = new CustomGridLayoutManager(this.getContext(),9 );
 
         rv.setLayoutManager(manager);
         rv.setAdapter(mainAdapter);
