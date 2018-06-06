@@ -39,7 +39,7 @@ public class NewsMainFragment extends Fragment {
 
         RecyclerView rv = view.findViewById(R.id.main_recycler_view);
 
-        CustomGridLayoutManager manager = new CustomGridLayoutManager(this.getContext(),9 );
+        CustomGridLayoutManager manager = new CustomGridLayoutManager(this.getContext() );
 
         rv.setLayoutManager(manager);
         rv.setAdapter(mainAdapter);

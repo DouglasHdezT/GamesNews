@@ -9,6 +9,7 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.LinearLayoutManager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,6 +22,7 @@ import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
+import com.debugps.gamesnews.tools.CustomGridLayoutManager;
 
 import java.util.List;
 
@@ -79,8 +81,8 @@ public class NewsPerGameFragment extends Fragment {
             }
         });
 
-        mPagerAdapter.addFragmentToList(NewsMainFragment.newInstance(newsAdapter), getString(R.string.games_general));
-        mPagerAdapter.addFragmentToList(PlayerPerGameFragment.newInstance(playersAdapter), getString(R.string.games_players));
+        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(newsAdapter, new CustomGridLayoutManager(this.getContext())), getString(R.string.games_general));
+        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(playersAdapter, new LinearLayoutManager(this.getContext())), getString(R.string.games_players));
 
         viewPager.setAdapter(mPagerAdapter);
 

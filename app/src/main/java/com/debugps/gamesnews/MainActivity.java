@@ -1,7 +1,6 @@
 package com.debugps.gamesnews;
 
 import android.arch.lifecycle.Observer;
-import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
@@ -15,9 +14,7 @@ import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.RecyclerView;
 import android.support.v7.widget.Toolbar;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -25,44 +22,34 @@ import android.view.View;
 import android.widget.SearchView;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
-import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.fragment.NewsPerGameFragment;
-import com.debugps.gamesnews.interfaces.NetVerified;
+import com.debugps.gamesnews.fragment.RecyclerViewFragment;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.login.LoginActivity;
 import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.viewModels.CategoryViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.debugps.gamesnews.tools.CustomGridLayoutManager;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
-import io.reactivex.android.schedulers.AndroidSchedulers;
-import io.reactivex.disposables.CompositeDisposable;
-import io.reactivex.observers.DisposableSingleObserver;
-import io.reactivex.schedulers.Schedulers;
-import okhttp3.Interceptor;
-import okhttp3.OkHttpClient;
-import okhttp3.Request;
-import okhttp3.Response;
-import retrofit2.Retrofit;
-import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
-import retrofit2.converter.gson.GsonConverterFactory;
-
 /**
  * Clase encargada del flujo principal, tanto logico como grafico, de toda la Aplicacion.
  */
-public class MainActivity extends AppCompatActivity implements NetVerified{
+public class MainActivity extends AppCompatActivity implements MainTools {
 
     public static String token_var = "";
     private final static int ID_ITEM_MENU_GAMES = 101010;
     private static final Random rn = new Random();
+
+    public static boolean REFRESH_DONE_NEWS;
+    public static boolean REFRESH_DONE_CATEGORIES;
+    public static boolean REFRESH_DONE_PLAYERS;
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -228,7 +215,7 @@ public class MainActivity extends AppCompatActivity implements NetVerified{
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()){
                     case R.id.drawer_menu_news:
-                        setUpMainFragment(NewsMainFragment.newInstance(mainAdapter));
+                        setUpMainFragment(RecyclerViewFragment.newInstance(mainAdapter, new CustomGridLayoutManager(MainActivity.this)));
                         toolbar.setTitle(R.string.main_menu_title);
                         //Log.d("Name", "News");
                         break;
@@ -301,6 +288,14 @@ public class MainActivity extends AppCompatActivity implements NetVerified{
                 = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
         NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
         return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+    }
+
+    /**
+     * Metodo utilizado para actulizar las listas a traves de SwipeRefreshLayout
+     */
+    @Override
+    public void refreshAll() {
+
     }
 
     /**

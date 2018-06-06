@@ -5,8 +5,8 @@ import android.support.v7.widget.GridLayoutManager;
 
 public class CustomGridLayoutManager extends GridLayoutManager {
 
-    public CustomGridLayoutManager(Context context, int spanCount) {
-        super(context, spanCount);
+    public CustomGridLayoutManager(Context context) {
+        super(context, 9);
 
         setSpanSizeLookup(new GridLayoutManager.SpanSizeLookup() {
             @Override
