@@ -12,9 +12,11 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
@@ -30,13 +32,17 @@ import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.login.LoginActivity;
 import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.New;
+import com.debugps.gamesnews.roomTools.POJO.Player;
 import com.debugps.gamesnews.roomTools.viewModels.CategoryViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
+import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
 import com.debugps.gamesnews.tools.CustomGridLayoutManager;
+import com.debugps.gamesnews.tools.RefreshAsyncTask;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.concurrent.ExecutionException;
 
 /**
  * Clase encargada del flujo principal, tanto logico como grafico, de toda la Aplicacion.
@@ -47,9 +53,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private final static int ID_ITEM_MENU_GAMES = 101010;
     private static final Random rn = new Random();
 
-    public static boolean REFRESH_DONE_NEWS;
-    public static boolean REFRESH_DONE_CATEGORIES;
-    public static boolean REFRESH_DONE_PLAYERS;
+    public static int REFRESH_DONE_NEWS;
+    public static int REFRESH_DONE_CATEGORIES;
+    public static int REFRESH_DONE_PLAYERS;
+    public static int IN_REFRESH = 0;
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -62,6 +69,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
     private NewViewModel newViewModel;
     private CategoryViewModel categoryViewModel;
+    private PlayerViewModel playerViewModel;
 
     /**
      * Metodo encargado de la creacion y asignacion de valores a los componentes, logicos y graficos, en la actividad Main.
@@ -83,13 +91,15 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         setResourcesUp();
         setAdaptersUp();
 
+        Log.d("token", token_var);
+
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
 
         toolbar.setTitle(R.string.main_menu_title);
-        NewsMainFragment newsMainFragment = NewsMainFragment.newInstance(mainAdapter);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_activity_frame_layout, newsMainFragment);
+        ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, new CustomGridLayoutManager(this)));
         ft.commit();
     }
 
@@ -292,10 +302,19 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
     /**
      * Metodo utilizado para actulizar las listas a traves de SwipeRefreshLayout
+     * -1 Algun Error al actualizar.
+     * 0 No ha actualizado o no esta refrescando
+     * 1 Exito
      */
     @Override
     public void refreshAll() {
+        playerViewModel.deleteAllPlayers();
+        newViewModel.deleteAllNews();
+        categoryViewModel.deleteAllCategories();
 
+        playerViewModel.refreshPlayers();
+        newViewModel.refreshNews();
+        categoryViewModel.refreshCategories();
     }
 
     /**

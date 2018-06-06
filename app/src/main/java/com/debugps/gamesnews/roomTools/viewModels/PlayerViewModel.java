@@ -35,4 +35,8 @@ public class PlayerViewModel extends AndroidViewModel {
     public void deleteAllPlayers(){
         playerRepository.deleteAllPlayers();
     }
+
+    public void refreshPlayers(){
+        playerRepository.refreshPlayers();
+    }
 }

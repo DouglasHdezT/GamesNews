@@ -55,6 +55,10 @@ public class NewViewModel extends AndroidViewModel {
         mNewRepository.deleteAllNews();
     }
 
+    public void refreshNews(){
+        mNewRepository.refreshNews();
+    }
+
     /**
      * Metodo para obtener todas la noticias.
      * @return LiveData con las noticias.

@@ -25,4 +25,6 @@
     <string name="games_general">General</string>
     <string name="player_name_text">Player Name</string>
     <string name="games_players">Top Players</string>
+    <string name="error_refresh">Cannot Refresh Data</string>
+    <string name="refresh_succ">Refresh Succeed</string>
 </resources>
