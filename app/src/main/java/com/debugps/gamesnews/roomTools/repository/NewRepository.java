@@ -64,12 +64,16 @@ public class NewRepository {
      * @return Lista de todas las news.
      */
     public LiveData<List<New>> getmAllNews() {
+        refreshNews();
+
+        return mAllNews;
+    }
+
+    public void refreshNews(){
         compositeDisposable.add(gamesNewsApi.getAllNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getNewsObserver()));
-
-        return mAllNews;
     }
 
     /**

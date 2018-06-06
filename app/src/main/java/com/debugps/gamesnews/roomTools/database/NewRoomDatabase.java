@@ -11,6 +11,7 @@ import android.support.annotation.NonNull;
 import com.debugps.gamesnews.interfaces.NetVerified;
 import com.debugps.gamesnews.roomTools.DAO.CategoryDAO;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
+import com.debugps.gamesnews.roomTools.DAO.PlayerDAO;
 import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.New;
 
@@ -49,5 +50,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
     public abstract NewDao newDao();
 
     public abstract CategoryDAO categoryDAO();
+
+    public abstract PlayerDAO playerDAO();
 
 }

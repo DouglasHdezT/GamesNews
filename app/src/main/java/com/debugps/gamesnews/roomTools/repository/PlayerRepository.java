@@ -3,13 +3,12 @@ package com.debugps.gamesnews.roomTools.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
-import android.support.v4.widget.ListViewAutoScrollHelper;
-import android.util.Log;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
-import com.debugps.gamesnews.roomTools.DAO.CategoryDAO;
-import com.debugps.gamesnews.roomTools.POJO.Category;
+import com.debugps.gamesnews.api.data.PlayerDataApi;
+import com.debugps.gamesnews.roomTools.DAO.PlayerDAO;
+import com.debugps.gamesnews.roomTools.POJO.Player;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -30,77 +29,72 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class CategoryRepository {
+public class PlayerRepository {
 
-    private CategoryDAO categoryDAO;
-    private LiveData<List<Category>> categoryList;
-    private LiveData<Double> cantCategories;
+    private PlayerDAO playerDAO;
+
+    private LiveData<List<Player>> playersPerGame;
 
     private GamesNewsApi gamesNewsApi;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public CategoryRepository(Application application){
-        NewRoomDatabase db = NewRoomDatabase.getDatabaseInstance(application);
-        categoryDAO = db.categoryDAO();
-
-        categoryList = categoryDAO.getAllCategories();
-        cantCategories = categoryDAO.getCantCategories();
-
+    public PlayerRepository(Application application){
+        playerDAO = NewRoomDatabase.getDatabaseInstance(application).playerDAO();
         gamesNewsApi = createGamesNewApi();
     }
 
-    public LiveData<List<Category>> getCategoryList() {
-        refreshCategories();
+    public LiveData<List<Player>> getPlayerPerGame(String game_name) {
+        refreshPlayers();
 
-        return categoryList;
+        playersPerGame = playerDAO.getPlayerPerGame(game_name);
+        return playersPerGame;
     }
 
-    public void refreshCategories(){
-        compositeDisposable.add(gamesNewsApi.getListTypeGames()
+    public void refreshPlayers(){
+        compositeDisposable.add(gamesNewsApi.getAllPlayers()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(getCategoriesObserver()));
-
+                .subscribeWith(getPlayersObservers()));
     }
 
-    public LiveData<Double> getCantCategories() {
-        return cantCategories;
+    public void insertPlayer(Player player){
+        new InsertAsycTask(playerDAO).execute(player);
     }
 
-    public void insertCategory(Category category){
-        new InsertCategoryAsyncTask(categoryDAO).execute(category);
+    public void deleteAllPlayers(){
+        new DeleteAsycTask(playerDAO).execute();
     }
 
-    public void deleteAllCategories(){
-        new DeleteCategoriesAsyncTask(categoryDAO).execute();
-    }
+    private static class InsertAsycTask extends AsyncTask<Player, Void, Void>{
 
-    private static class InsertCategoryAsyncTask extends AsyncTask<Category, Void, Void>{
+        private PlayerDAO playerDAO;
 
-        private CategoryDAO asyncCategoryDAO;
-
-        private InsertCategoryAsyncTask(CategoryDAO asyncCategoryDAO) {
-            this.asyncCategoryDAO = asyncCategoryDAO;
+        private InsertAsycTask(PlayerDAO playerDAO) {
+            this.playerDAO = playerDAO;
         }
 
         @Override
-        protected Void doInBackground(Category... categories) {
-            asyncCategoryDAO.insertCategory(categories[0]);
+        protected Void doInBackground(Player... players) {
+
+            playerDAO.insertPlayer(players[0]);
+
             return null;
         }
     }
 
-    private static class DeleteCategoriesAsyncTask extends AsyncTask<Void, Void, Void>{
+    private static class DeleteAsycTask extends AsyncTask<Void, Void, Void>{
 
-        private CategoryDAO asyncCategoryDAO;
+        private PlayerDAO playerDAO;
 
-        private DeleteCategoriesAsyncTask(CategoryDAO asyncCategoryDAO) {
-            this.asyncCategoryDAO = asyncCategoryDAO;
+        private DeleteAsycTask(PlayerDAO playerDAO) {
+            this.playerDAO = playerDAO;
         }
 
         @Override
         protected Void doInBackground(Void... voids) {
-            asyncCategoryDAO.deleteAllCategories();
+
+            playerDAO.deleteAllPlayers();
+
             return null;
         }
     }
@@ -134,12 +128,17 @@ public class CategoryRepository {
         return retrofit.create(GamesNewsApi.class);
     }
 
-    private DisposableSingleObserver<List<String>> getCategoriesObserver(){
-        return new DisposableSingleObserver<List<String>>() {
+    private DisposableSingleObserver<List<PlayerDataApi>> getPlayersObservers(){
+        return  new DisposableSingleObserver<List<PlayerDataApi>>() {
             @Override
-            public void onSuccess(List<String> strings) {
-                for(String value: strings){
-                    insertCategory(new Category(value));
+            public void onSuccess(List<PlayerDataApi> players) {
+                for(PlayerDataApi player: players){
+                    insertPlayer(new Player(
+                            player.get_id(),
+                            player.getName(),
+                            player.getAvatar(),
+                            player.getBiografia(),
+                            player.getGame()));
                 }
             }
 

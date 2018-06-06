@@ -1,6 +1,7 @@
 package com.debugps.gamesnews.api.controler;
 
 import com.debugps.gamesnews.api.data.NewDataAPI;
+import com.debugps.gamesnews.api.data.PlayerDataApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 
 import java.util.List;
@@ -47,4 +48,11 @@ public interface GamesNewsApi {
      */
     @GET("/news/type/list")
     Single<List<String>> getListTypeGames();
+
+    /**
+     * Obtiene todos los jugadores de la API
+     * @return Lista de Jugadores de la API
+     */
+    @GET("/players")
+    Single<List<PlayerDataApi>> getAllPlayers();
 }
