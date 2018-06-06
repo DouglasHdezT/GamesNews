@@ -11,16 +11,16 @@ public class PlayerDataApi {
     @SerializedName("_id")
     private String _id;
 
-    @SerializedName("_id")
+    @SerializedName("name")
     private String name;
 
-    @SerializedName("_id")
+    @SerializedName("avatar")
     private String avatar;
 
-    @SerializedName("_id")
+    @SerializedName("biografia")
     private String biografia;
 
-    @SerializedName("_id")
+    @SerializedName("game")
     private String game;
 
     public PlayerDataApi(@NonNull String _id, String name, String avatar, String biografia, String game) {
