@@ -25,6 +25,7 @@ import android.widget.SearchView;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.fragment.NewsPerGameFragment;
 import com.debugps.gamesnews.fragment.RecyclerViewFragment;
@@ -164,7 +165,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      * Metodo utilizado para instanciar los Adaptadores de los distintos RecyclerViews
      */
     private void setAdaptersUp(){
-        mainAdapter = new MainAdapter();
+        mainAdapter = new MainAdapter((MainTools) this);
     }
 
     /**
@@ -315,6 +316,16 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         playerViewModel.refreshPlayers();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
+    }
+
+    /**
+     * Metodo para mostrar el dialogo ce las noticias;
+     * @param new_var Noticia a mostrar
+     */
+    @Override
+    public void showNewDialog(New new_var) {
+        NewsDialog newsDialog = NewsDialog.newInstace(new_var);
+        newsDialog.show(MainActivity.this.getSupportFragmentManager(),"Dialogo");
     }
 
     /**

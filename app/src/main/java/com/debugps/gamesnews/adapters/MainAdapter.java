@@ -11,6 +11,8 @@ import android.widget.TextView;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.R;
+import com.debugps.gamesnews.dialogs.NewsDialog;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.squareup.picasso.Picasso;
 
@@ -21,9 +23,10 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder> {
 
     private List<New> newList;
+    private MainTools tools;
 
-    public MainAdapter() {
-
+    public MainAdapter(MainTools tools) {
+        this.tools = tools;
     }
 
     public class MainViewHolder extends RecyclerView.ViewHolder {
@@ -55,7 +58,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     }
 
     @Override
-    public void onBindViewHolder(@NonNull MainAdapter.MainViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull MainAdapter.MainViewHolder holder, final int position) {
 
         holder.coverImage.setBackgroundResource(MainActivity.getColorId());
 
@@ -83,6 +86,13 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
 
         holder.title.setText(newList.get(position).getTitle());
         holder.game.setText(newList.get(position).getGame());
+
+        holder.cardView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tools.showNewDialog(newList.get(position));
+            }
+        });
 
     }
 

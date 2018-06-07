@@ -47,7 +47,7 @@ public class PlayerListAdapter extends RecyclerView.Adapter<PlayerListAdapter.Pl
     public void onBindViewHolder(@NonNull PlayerListAdapter.PlayerViewHolder holder, int position) {
         holder.profilePhoto.setCircleBackgroundColorResource(MainActivity.getColorId());
 
-        if(players.get(position).getAvatar().equals("")){
+        if(!players.get(position).getAvatar().equals("")){
             Picasso.get().load(players.get(position).getAvatar())
                     .error(R.drawable.ic_person)
                     .into(holder.profilePhoto);

@@ -3,6 +3,7 @@ package com.debugps.gamesnews.fragment;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProvider;
 import android.arch.lifecycle.ViewModelProviders;
+import android.content.Context;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
@@ -18,6 +19,7 @@ import com.debugps.gamesnews.R;
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.adapters.PagerAdapter;
 import com.debugps.gamesnews.adapters.PlayerListAdapter;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
@@ -27,6 +29,8 @@ import com.debugps.gamesnews.tools.CustomGridLayoutManager;
 import java.util.List;
 
 public class NewsPerGameFragment extends Fragment {
+
+    private MainTools tools;
 
     private String gameQuery;
     private MainAdapter newsAdapter;
@@ -52,7 +56,7 @@ public class NewsPerGameFragment extends Fragment {
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         mPagerAdapter = new PagerAdapter(getFragmentManager());
-        newsAdapter = new MainAdapter();
+        newsAdapter = new MainAdapter(tools);
         playersAdapter = new PlayerListAdapter();
     }
 
@@ -93,5 +97,20 @@ public class NewsPerGameFragment extends Fragment {
 
     public void setGameQuery(String gameQuery) {
         this.gameQuery = gameQuery;
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(context instanceof MainTools){
+            tools = (MainTools) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        tools = null;
     }
 }
