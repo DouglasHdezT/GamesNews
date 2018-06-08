@@ -7,6 +7,7 @@ import android.os.AsyncTask;
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.NewDataAPI;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
@@ -39,6 +40,7 @@ public class NewRepository {
     private NewDao newDao;
     private LiveData<Double> cant_news;
     private LiveData<List<New>> mAllNews;
+    private LiveData<List<New>> favNews;
     private LiveData<List<New>> newsPerGame;
 
     private GamesNewsApi gamesNewsApi;
@@ -55,6 +57,7 @@ public class NewRepository {
 
         cant_news = newDao.getCantNews();
         mAllNews = newDao.getAllNews();
+        favNews = newDao.getFavoritesNews();
 
         gamesNewsApi = createGamesNewApi();
     }
@@ -64,8 +67,6 @@ public class NewRepository {
      * @return Lista de todas las news.
      */
     public LiveData<List<New>> getmAllNews() {
-        refreshNews();
-
         return mAllNews;
     }
 
@@ -92,6 +93,10 @@ public class NewRepository {
     public LiveData<List<New>> getNewsPerGame(String name) {
         newsPerGame = newDao.getNewsFromGame(name);
         return newsPerGame;
+    }
+
+    public LiveData<List<New>> getFavNews() {
+        return favNews;
     }
 
     /**
@@ -222,6 +227,7 @@ public class NewRepository {
                             new_var.getDescription(),
                             new_var.getCreatedDate(),
                             0,
+                            MainActivity.getColorId(),
                             new_var.get__v()));
                 }
             }

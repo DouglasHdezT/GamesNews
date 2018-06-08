@@ -99,6 +99,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
 
+        newViewModel.refreshNews();
+        categoryViewModel.refreshCategories();
+        playerViewModel.refreshPlayers();
+
         toolbar.setTitle(R.string.main_menu_title);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, new CustomGridLayoutManager(this)));
@@ -340,6 +344,26 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     }
 
     /**
+     * Metodo para settear una noticia como favorita.
+     * @param newFavorited
+     */
+    @Override
+    public void setFavorited(New newFavorited) {
+        newFavorited.setFavorited(1);
+        newViewModel.insertNew(newFavorited);
+    }
+
+    /**
+     * Metodo para desettear una noticia como favorita
+     * @param newFavorited
+     */
+    @Override
+    public void unsetFavorited(New newFavorited) {
+        newFavorited.setFavorited(0);
+        newViewModel.insertNew(newFavorited);
+    }
+
+    /**
      * Generador de colores al azar entre la paleta 700 Material Design
      * @return Id del color generado
      */
@@ -353,13 +377,13 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                 idColor = R.color.MaterialBlue900;
                 break;
             case 2:
-                idColor = R.color.MaterialRed900;
+                idColor = R.color.MaterialDeepPurple900;
                 break;
             case 3:
                 idColor = R.color.MaterialPurple900;
                 break;
             case 4:
-                idColor = R.color.MaterialBlueGrey900;
+                idColor = R.color.MaterialBlue900;
                 break;
             case 5:
                 idColor = R.color.MaterialCyan900;
@@ -374,7 +398,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                 idColor = R.color.MaterialBrown900;
                 break;
             case 9:
-                idColor = R.color.MaterialOrange900;
+                idColor = R.color.MaterialLightBlue900;
                 break;
             case 10:
                 idColor = R.color.MaterialPink900;
@@ -392,7 +416,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                 idColor = R.color.MaterialDeepPurple900;
                 break;
             case 15:
-                idColor = R.color.MaterialDeepOrange900;
+                idColor = R.color.MaterialCyan900;
                 break;
             case 16:
                 idColor = R.color.MaterialGrey900;

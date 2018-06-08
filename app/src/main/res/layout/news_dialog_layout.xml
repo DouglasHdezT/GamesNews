@@ -35,7 +35,6 @@
             android:layout_alignParentEnd="true"
             android:layout_margin="8dp"
             android:src="@drawable/ic_fav_white"
-            app:civ_circle_background_color="@android:color/transparent"
             android:layout_alignParentRight="true" />
 
     </RelativeLayout>

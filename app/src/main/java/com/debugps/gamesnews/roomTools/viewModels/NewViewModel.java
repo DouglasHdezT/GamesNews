@@ -19,6 +19,7 @@ public class NewViewModel extends AndroidViewModel {
 
     private LiveData<Double> cant_news;
     private LiveData<List<New>> mAllNews;
+    private LiveData<List<New>> favNews;
     private LiveData<List<New>> newsPerGame;
 
     /**
@@ -30,6 +31,7 @@ public class NewViewModel extends AndroidViewModel {
         mNewRepository = new NewRepository(application);
         cant_news = mNewRepository.getCant_news();
         mAllNews = mNewRepository.getmAllNews();
+        favNews = mNewRepository.getFavNews();
     }
 
     /**
@@ -65,6 +67,10 @@ public class NewViewModel extends AndroidViewModel {
      */
     public LiveData<List<New>> getAllNews() {
         return mAllNews;
+    }
+
+    public LiveData<List<New>> getFavNews() {
+        return favNews;
     }
 
     /**

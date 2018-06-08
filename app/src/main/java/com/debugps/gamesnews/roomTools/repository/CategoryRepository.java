@@ -50,8 +50,6 @@ public class CategoryRepository {
     }
 
     public LiveData<List<Category>> getCategoryList() {
-        refreshCategories();
-
         return categoryList;
     }
 

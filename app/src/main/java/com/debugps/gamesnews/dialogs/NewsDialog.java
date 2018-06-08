@@ -1,5 +1,6 @@
 package com.debugps.gamesnews.dialogs;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
@@ -15,6 +16,7 @@ import android.widget.TextView;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.R;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.squareup.picasso.Picasso;
 
@@ -23,6 +25,8 @@ import de.hdodenhof.circleimageview.CircleImageView;
 public class NewsDialog extends DialogFragment {
 
     private New new_var;
+
+    private MainTools tools;
 
     private CircleImageView exit_btn;
     private CircleImageView fav_btn;
@@ -52,12 +56,6 @@ public class NewsDialog extends DialogFragment {
             return null;
         }
 
-        int color;
-
-        do{
-            color= MainActivity.getColorId();
-        }while(color == R.color.MaterialBlueGrey900);
-
         getDialog().requestWindowFeature(Window.FEATURE_NO_TITLE);
         Rect displayRectangle = new Rect();
         Window window = getActivity().getWindow();
@@ -70,7 +68,7 @@ public class NewsDialog extends DialogFragment {
 
         setResoursesUp(view);
 
-        dialogImage.setBackgroundResource(color);
+        dialogImage.setBackgroundResource(new_var.getColorId());
 
         if(new_var.getCoverImage().equals("")){
             dialogImage.setImageResource(R.drawable.ic_game_white);
@@ -83,10 +81,10 @@ public class NewsDialog extends DialogFragment {
         }
 
         if(new_var.getFavorited() == 1){
-            fav_btn.setCircleBackgroundColor(Color.WHITE);
+            fav_btn.setCircleBackgroundColorResource(R.color.loginBackground);
             fav_btn.setImageResource(R.drawable.ic_fav_red);
         }else{
-            fav_btn.setCircleBackgroundColor(Color.TRANSPARENT);
+            fav_btn.setCircleBackgroundColorResource(R.color.Trans);
             fav_btn.setImageResource(R.drawable.ic_fav_white);
         }
 
@@ -99,6 +97,19 @@ public class NewsDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 NewsDialog.this.dismiss();
+            }
+        });
+
+        fav_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(new_var.getFavorited() == 1){
+                    fav_btn.setImageResource(R.drawable.ic_fav_white);
+                    tools.unsetFavorited(new_var);
+                }else{
+                    fav_btn.setImageResource(R.drawable.ic_fav_red);
+                    tools.setFavorited(new_var);
+                }
             }
         });
 
@@ -119,5 +130,20 @@ public class NewsDialog extends DialogFragment {
         body = view.findViewById(R.id.news_dialog_body);
         game = view.findViewById(R.id.news_dialog_game);
         date = view.findViewById(R.id.news_dialog_date);
+    }
+
+    @Override
+    public void onAttach(Context context) {
+        super.onAttach(context);
+
+        if(context instanceof MainTools){
+            tools = (MainTools) context;
+        }
+    }
+
+    @Override
+    public void onDetach() {
+        super.onDetach();
+        tools = null;
     }
 }

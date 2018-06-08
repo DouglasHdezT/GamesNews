@@ -60,7 +60,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
     @Override
     public void onBindViewHolder(@NonNull MainAdapter.MainViewHolder holder, final int position) {
 
-        holder.coverImage.setBackgroundResource(MainActivity.getColorId());
+        holder.coverImage.setBackgroundResource(newList.get(position).getColorId());
 
         if(position%3 == 0){
             holder.cardView.setMinimumHeight(180);
@@ -91,6 +91,17 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             @Override
             public void onClick(View v) {
                 tools.showNewDialog(newList.get(position));
+            }
+        });
+
+        holder.favorited.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if(newList.get(position).getFavorited() == 1){
+                    tools.unsetFavorited(newList.get(position));
+                }else {
+                    tools.setFavorited(newList.get(position));
+                }
             }
         });
 

@@ -37,6 +37,9 @@ public class New {
     @ColumnInfo(name = "favorited")
     private int favorited;
 
+    @ColumnInfo(name = "colorid")
+    private int colorId;
+
     @ColumnInfo(name = "__v")
     private int __v;
 
@@ -50,10 +53,11 @@ public class New {
      * @param coverImage URL de la imagen que representa la noticia.
      * @param description Breve descripcion de la noticia
      * @param createdDate Fecha de creacion de la noticia. Formato YYYY-MM-DDThh:mm:ss.ssssZ
-     * @param favorited Si la noticia es favorita; 0 false, 1 true.
+     * @param favorited Si la noticia es favorita; 0 false, 1 true
+     * @param colorId Color de fondo de la noticia
      * @param __v Nuemero de version
      */
-    public New(@NonNull String _id, String title, String body, String game, String coverImage, String description, String createdDate, int favorited, int __v) {
+    public New(@NonNull String _id, String title, String body, String game, String coverImage, String description, String createdDate, int favorited,int colorId, int __v) {
         this._id = _id;
 
         if(title == null){
@@ -93,6 +97,7 @@ public class New {
         }
 
         this.favorited = favorited;
+        this.colorId  =colorId;
         this.__v = __v;
     }
 
@@ -168,5 +173,13 @@ public class New {
 
     public void setFavorited(int favorited) {
         this.favorited = favorited;
+    }
+
+    public int getColorId() {
+        return colorId;
+    }
+
+    public void setColorId(int colorId) {
+        this.colorId = colorId;
     }
 }

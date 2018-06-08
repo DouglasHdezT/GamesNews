@@ -44,8 +44,6 @@ public class PlayerRepository {
     }
 
     public LiveData<List<Player>> getPlayerPerGame(String game_name) {
-        refreshPlayers();
-
         playersPerGame = playerDAO.getPlayerPerGame(game_name);
         return playersPerGame;
     }

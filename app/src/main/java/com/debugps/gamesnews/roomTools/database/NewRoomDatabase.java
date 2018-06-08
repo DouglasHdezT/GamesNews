@@ -15,7 +15,7 @@ import com.debugps.gamesnews.roomTools.POJO.Player;
 /**
  * Clase encargada de Instanciar la base de datos para la App
  */
-@Database(entities = {New.class, Category.class, Player.class}, version = 3)
+@Database(entities = {New.class, Category.class, Player.class}, version = 4)
 public abstract class NewRoomDatabase extends RoomDatabase {
 
     private static NewRoomDatabase INSTANCE;
