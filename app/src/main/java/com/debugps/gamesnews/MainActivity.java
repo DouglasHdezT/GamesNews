@@ -15,6 +15,7 @@ import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -65,6 +66,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     protected NavigationView navigationView;
 
     private MainAdapter mainAdapter;
+    private MainAdapter favoritesAdapter;
     private List<New> newList_main;
     private ArrayList<String> games_names = new ArrayList<>();
     private ArrayList<String> styled_names;
@@ -124,6 +126,13 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             }
         });
 
+        newViewModel.getFavNews().observe(this, new Observer<List<New>>() {
+            @Override
+            public void onChanged(@Nullable List<New> news) {
+                favoritesAdapter.setNewList(news);
+            }
+        });
+
         categoryViewModel.getCategoriesList().observe(this, new Observer<List<Category>>() {
             @Override
             public void onChanged(@Nullable List<Category> categories) {
@@ -171,6 +180,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     private void setAdaptersUp(){
         mainAdapter = new MainAdapter((MainTools) this);
+        favoritesAdapter = new MainAdapter((MainTools) this);
     }
 
     /**
@@ -236,6 +246,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                         //Log.d("Name", "News");
                         break;
                     case R.id.drawer_menu_fav:
+                        setUpMainFragment(RecyclerViewFragment.newInstance(favoritesAdapter, new LinearLayoutManager(MainActivity.this)));
                         toolbar.setTitle(R.string.main_menu_fav);
                         //Log.d("Name", "Fav");
                         break;
