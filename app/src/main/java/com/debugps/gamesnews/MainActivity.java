@@ -26,6 +26,7 @@ import android.widget.SearchView;
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.dialogs.NewsDialog;
+import com.debugps.gamesnews.dialogs.PlayerDialog;
 import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.fragment.NewsPerGameFragment;
 import com.debugps.gamesnews.fragment.RecyclerViewFragment;
@@ -326,6 +327,16 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     public void showNewDialog(New new_var) {
         NewsDialog newsDialog = NewsDialog.newInstace(new_var);
         newsDialog.show(MainActivity.this.getSupportFragmentManager(),"Dialogo");
+    }
+
+    /**
+     * Metodo para mostrar el dialogo de los jugadores.
+     * @param player Player a mostrar
+     */
+    @Override
+    public void showPlayerDialog(Player player) {
+       PlayerDialog dialog= PlayerDialog.newInstance(player);
+       dialog.show(MainActivity.this.getSupportFragmentManager(), "Dialogo");
     }
 
     /**

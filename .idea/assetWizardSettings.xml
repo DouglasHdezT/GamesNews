@@ -29,9 +29,11 @@
                         <option name="values">
                           <map>
                             <entry key="color" value="ffffff" />
+                            <entry key="height" value="200" />
                             <entry key="outputName" value="ic_person" />
                             <entry key="overrideSize" value="true" />
                             <entry key="sourceFile" value="C:\Users\Dougl\Desktop\game.svg" />
+                            <entry key="width" value="200" />
                           </map>
                         </option>
                       </PersistentState>

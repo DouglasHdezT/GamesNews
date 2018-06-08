@@ -28,4 +28,5 @@
     <string name="error_refresh">Cannot Refresh Data</string>
     <string name="refresh_succ">Refresh Succeed</string>
     <string name="created_date_text">Created date</string>
+    <string name="biography_text">Biography:</string>
 </resources>

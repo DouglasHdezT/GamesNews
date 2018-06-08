@@ -60,8 +60,8 @@ public class NewsDialog extends DialogFragment {
 
         View view = inflater.inflate(R.layout.news_dialog_layout, container, false);
 
-        view.setMinimumWidth((int) (displayRectangle.width() * 0.9f));
-        view.setMinimumHeight((int) (displayRectangle.height() * 0.9f));
+        view.setMinimumWidth((int) (displayRectangle.width() * 0.98f));
+        view.setMinimumHeight((int) (displayRectangle.height() * 0.98f));
 
         setResoursesUp(view);
 

@@ -57,7 +57,7 @@ public class NewsPerGameFragment extends Fragment {
         super.onCreate(savedInstanceState);
         mPagerAdapter = new PagerAdapter(getFragmentManager());
         newsAdapter = new MainAdapter(tools);
-        playersAdapter = new PlayerListAdapter();
+        playersAdapter = new PlayerListAdapter(tools);
     }
 
     @Nullable
