@@ -27,7 +27,7 @@ public class PlayerDialog extends DialogFragment {
     private TextView game;
 
     private ImageView image;
-
+    private CircleImageView exit_btn;
     private Player player;
 
     public PlayerDialog() {
@@ -81,6 +81,13 @@ public class PlayerDialog extends DialogFragment {
         bio.setText(player.getBiografia());
         //game.setText(player.getGame());
 
+        exit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                PlayerDialog.this.dismiss();
+            }
+        });
+
         return view;
     }
 
@@ -89,6 +96,7 @@ public class PlayerDialog extends DialogFragment {
     }
 
     private void setResourcesUp(View view){
+        exit_btn =  view.findViewById(R.id.news_dialog_exit);
         name = view.findViewById(R.id.player_dialog_name);
         bio = view.findViewById(R.id.player_dialog_bio);
         game = view.findViewById(R.id.player_dialog_game);

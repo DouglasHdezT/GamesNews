@@ -19,6 +19,14 @@
             android:background="@color/MaterialCyan900"
             />
 
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/news_dialog_exit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_cancel"
+            app:civ_circle_background_color="@color/MaterialRed900" />
+
     </RelativeLayout>
 
     <ScrollView

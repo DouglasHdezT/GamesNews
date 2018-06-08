@@ -18,7 +18,7 @@
                                 <PersistentState>
                                   <option name="values">
                                     <map>
-                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/social/ic_person_black_24dp.xml" />
+                                      <entry key="url" value="jar:file:/C:/Program%20Files/Android/Android%20Studio/plugins/android/lib/android.jar!/images/material_design_icons/navigation/ic_cancel_black_24dp.xml" />
                                     </map>
                                   </option>
                                 </PersistentState>
@@ -28,12 +28,13 @@
                         </option>
                         <option name="values">
                           <map>
+                            <entry key="assetSourceType" value="FILE" />
                             <entry key="color" value="ffffff" />
-                            <entry key="height" value="200" />
-                            <entry key="outputName" value="ic_person" />
+                            <entry key="height" value="512" />
+                            <entry key="outputName" value="ic_fav_white" />
                             <entry key="overrideSize" value="true" />
-                            <entry key="sourceFile" value="C:\Users\Dougl\Desktop\game.svg" />
-                            <entry key="width" value="200" />
+                            <entry key="sourceFile" value="C:\Users\Dougl\Desktop\love-circle (1).svg" />
+                            <entry key="width" value="512" />
                           </map>
                         </option>
                       </PersistentState>

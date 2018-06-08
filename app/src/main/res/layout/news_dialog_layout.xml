@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:background="@color/MaterialBlueGrey900"
     android:orientation="vertical">
 
@@ -19,6 +19,24 @@
             android:src="@drawable/ic_game_white"
             android:background="@color/MaterialLime900"
             />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/news_dialog_exit"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_cancel"
+            app:civ_circle_background_color="@color/MaterialRed900" />
+
+        <de.hdodenhof.circleimageview.CircleImageView
+            android:id="@+id/news_dialog_fav"
+            android:layout_width="25dp"
+            android:layout_height="25dp"
+            android:layout_alignParentEnd="true"
+            android:layout_margin="8dp"
+            android:src="@drawable/ic_fav_white"
+            app:civ_circle_background_color="@android:color/transparent"
+            android:layout_alignParentRight="true" />
 
     </RelativeLayout>
 

@@ -1,5 +1,6 @@
 package com.debugps.gamesnews.dialogs;
 
+import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -17,10 +18,14 @@ import com.debugps.gamesnews.R;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.squareup.picasso.Picasso;
 
+import de.hdodenhof.circleimageview.CircleImageView;
+
 public class NewsDialog extends DialogFragment {
 
     private New new_var;
 
+    private CircleImageView exit_btn;
+    private CircleImageView fav_btn;
     private ImageView dialogImage;
     private TextView title;
     private TextView body;
@@ -77,10 +82,25 @@ public class NewsDialog extends DialogFragment {
             dialogImage.setScaleType(ImageView.ScaleType.CENTER_CROP);
         }
 
+        if(new_var.getFavorited() == 1){
+            fav_btn.setCircleBackgroundColor(Color.WHITE);
+            fav_btn.setImageResource(R.drawable.ic_fav_red);
+        }else{
+            fav_btn.setCircleBackgroundColor(Color.TRANSPARENT);
+            fav_btn.setImageResource(R.drawable.ic_fav_white);
+        }
+
         title.setText(new_var.getTitle());
         body.setText(new_var.getBody());
         game.setText(new_var.getGame());
         date.setText(new_var.getCreatedDate());
+
+        exit_btn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                NewsDialog.this.dismiss();
+            }
+        });
 
         return view;
 
@@ -92,6 +112,8 @@ public class NewsDialog extends DialogFragment {
     }
 
     private void setResoursesUp(View view){
+        exit_btn =  view.findViewById(R.id.news_dialog_exit);
+        fav_btn =  view.findViewById(R.id.news_dialog_fav);
         dialogImage = view.findViewById(R.id.news_dialog_image);
         title = view.findViewById(R.id.news_dialog_title);
         body = view.findViewById(R.id.news_dialog_body);
