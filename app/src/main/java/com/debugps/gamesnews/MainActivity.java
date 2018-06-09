@@ -34,9 +34,11 @@ import com.debugps.gamesnews.fragment.RecyclerViewFragment;
 import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.login.LoginActivity;
 import com.debugps.gamesnews.roomTools.POJO.Category;
+import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
 import com.debugps.gamesnews.roomTools.viewModels.CategoryViewModel;
+import com.debugps.gamesnews.roomTools.viewModels.FavoriteListViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
 import com.debugps.gamesnews.tools.CustomGridLayoutManager;
@@ -74,6 +76,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private NewViewModel newViewModel;
     private CategoryViewModel categoryViewModel;
     private PlayerViewModel playerViewModel;
+    private FavoriteListViewModel favoriteListViewModel;
 
     /**
      * Metodo encargado de la creacion y asignacion de valores a los componentes, logicos y graficos, en la actividad Main.
@@ -100,8 +103,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
+        favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
 
         newViewModel.refreshNews();
+        favoriteListViewModel.refreshFavorites();
         categoryViewModel.refreshCategories();
         playerViewModel.refreshPlayers();
 
@@ -123,6 +128,17 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             public void onChanged(@Nullable List<New> news) {
                 mainAdapter.setNewList(news);
                 newList_main = news;
+            }
+        });
+
+        favoriteListViewModel.getFavorite_list().observe(this, new Observer<List<FavoriteList>>() {
+            @Override
+            public void onChanged(@Nullable List<FavoriteList> favoriteLists) {
+                if (favoriteLists != null) {
+                    for(int i=0; i < favoriteLists.size(); i++){
+                        newViewModel.setFav(favoriteLists.get(i).getId());
+                    }
+                }
             }
         });
 

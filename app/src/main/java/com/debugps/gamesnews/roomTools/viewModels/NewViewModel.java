@@ -34,8 +34,16 @@ public class NewViewModel extends AndroidViewModel {
         favNews = mNewRepository.getFavNews();
     }
 
-    public New getANew(String id){
+    public LiveData<List<New>> getANew(String id){
         return mNewRepository.getANew(id);
+    }
+
+    public void setFav(String id){
+        mNewRepository.setFav(id);
+    }
+
+    public void unsetFav(String id){
+        mNewRepository.unsetFav(id);
     }
 
     /**

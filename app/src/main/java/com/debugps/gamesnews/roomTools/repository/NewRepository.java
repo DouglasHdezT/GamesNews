@@ -74,8 +74,16 @@ public class NewRepository {
         return mAllNews;
     }
 
-    public New getANew(String id){
+    public LiveData<List<New>> getANew(String id){
         return newDao.getANew(id);
+    }
+
+    public void setFav(String id){
+        new UpdateAsyncTask(newDao).execute("set",id);
+    }
+
+    public void unsetFav(String id){
+        new UpdateAsyncTask(newDao).execute("unset",id);
     }
 
     public void refreshNews(){
@@ -120,7 +128,7 @@ public class NewRepository {
      * @param _var New a actualizar
      */
     public void updateNew(New _var){
-        new UpdateAsyncTask(newDao).execute(_var);
+
     }
 
     /**
@@ -151,7 +159,7 @@ public class NewRepository {
     /**
      * Clase Asincrona para actualizar News en la base.
      */
-    private static class UpdateAsyncTask extends AsyncTask<New, Void, Void>{
+    private static class UpdateAsyncTask extends AsyncTask<String, Void, Void>{
 
         private NewDao mAsyncNewDao;
 
@@ -160,8 +168,12 @@ public class NewRepository {
         }
 
         @Override
-        protected Void doInBackground(New... params) {
-            mAsyncNewDao.updateNew(params[0]);
+        protected Void doInBackground(String... strings) {
+            if(strings[0].equals("set")){
+                mAsyncNewDao.setFavoritedNew(strings[1]);
+            }else{
+                mAsyncNewDao.unsetFavoritedNew(strings[1]);
+            }
             return null;
         }
     }

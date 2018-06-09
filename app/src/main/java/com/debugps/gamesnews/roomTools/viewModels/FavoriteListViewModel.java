@@ -8,6 +8,7 @@ import android.support.annotation.NonNull;
 import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.repository.FavoriteListRepository;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class FavoriteListViewModel extends AndroidViewModel {
@@ -37,5 +38,12 @@ public class FavoriteListViewModel extends AndroidViewModel {
         repository.deleteAllFavNews();
     }
 
+    public ArrayList<String> getOnlineList(){
+        return repository.getOnline_list();
+    }
+
+    public void refreshFavorites(){
+        repository.refreshFavs();
+    }
 
 }

@@ -37,9 +37,14 @@ public interface NewDao {
     @Update(onConflict = OnConflictStrategy.REPLACE)
     void updateNew(New new_var);
 
-    @Query("SELECT * FROM favorite_list_table WHERE id = :id")
-    New getANew(String id);
+    @Query("SELECT * FROM new_table WHERE _id = :id")
+    LiveData<List<New>> getANew(String id);
 
+    @Query("UPDATE new_table SET favorited = 1  where _id = :id")
+    void setFavoritedNew(String id);
+
+    @Query("UPDATE new_table SET favorited = 0  where _id = :id")
+    void unsetFavoritedNew(String id);
 
     /**
      * Metodo que recupera todas las noticias de la tabla new_table.
