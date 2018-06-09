@@ -3,12 +3,14 @@ package com.debugps.gamesnews.roomTools.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.support.design.widget.AppBarLayout;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
-import com.debugps.gamesnews.api.data.PlayerDataApi;
-import com.debugps.gamesnews.roomTools.DAO.PlayerDAO;
-import com.debugps.gamesnews.roomTools.POJO.Player;
+import com.debugps.gamesnews.api.data.UserDataApi;
+import com.debugps.gamesnews.login.LoginActivity;
+import com.debugps.gamesnews.roomTools.DAO.UserDao;
+import com.debugps.gamesnews.roomTools.POJO.User;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -29,70 +31,72 @@ import retrofit2.Retrofit;
 import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
 import retrofit2.converter.gson.GsonConverterFactory;
 
-public class PlayerRepository {
+public class UserRepository {
 
-    private PlayerDAO playerDAO;
+    private UserDao userDao;
 
-    private LiveData<List<Player>> playersPerGame;
+    private LiveData<List<User>> user_list;
 
+    private CompositeDisposable compositeDisposable= new CompositeDisposable();
     private GamesNewsApi gamesNewsApi;
-    private CompositeDisposable compositeDisposable = new CompositeDisposable();
 
-    public PlayerRepository(Application application){
-        playerDAO = NewRoomDatabase.getDatabaseInstance(application).playerDAO();
+    public UserRepository(Application application){
+        userDao = NewRoomDatabase.getDatabaseInstance(application).userDao();
+
+        user_list = userDao.getUser();
+
         gamesNewsApi = createGamesNewApi();
-        refreshPlayers();
     }
 
-    public LiveData<List<Player>> getPlayerPerGame(String game_name) {
-        playersPerGame = playerDAO.getPlayerPerGame(game_name);
-        return playersPerGame;
+    public LiveData<List<User>> getUser_list() {
+        return user_list;
     }
 
-    public void refreshPlayers(){
-        compositeDisposable.add(gamesNewsApi.getAllPlayers()
+    public void refreshDataUser(){
+        compositeDisposable.add(
+                gamesNewsApi.getUserInfo()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(getPlayersObservers()));
+                .subscribeWith(getUserObserver()));
     }
 
-    public void insertPlayer(Player player){
-        new InsertAsycTask(playerDAO).execute(player);
+    public void insertUser(User user){
+        new InsertAsycTask(userDao).execute(user);
     }
 
-    public void deleteAllPlayers(){
-        new DeleteAsycTask(playerDAO).execute();
+    public void deleeteAllUsers(){
+        new DeleteAsycTask(userDao).execute();
     }
 
-    private static class InsertAsycTask extends AsyncTask<Player, Void, Void>{
+    private static class InsertAsycTask extends AsyncTask<User, Void, Void> {
 
-        private PlayerDAO playerDAO;
+        private UserDao userDao;
 
-        private InsertAsycTask(PlayerDAO playerDAO) {
-            this.playerDAO = playerDAO;
+        private InsertAsycTask(UserDao userDao) {
+            this.userDao = userDao;
         }
 
         @Override
-        protected Void doInBackground(Player... players) {
+        protected Void doInBackground(User... players) {
 
-            playerDAO.insertPlayer(players[0]);
+            userDao.insertUser(players[0]);
 
             return null;
         }
     }
 
-    private static class DeleteAsycTask extends AsyncTask<Void, Void, Void>{
+    private static class DeleteAsycTask extends AsyncTask<Void, Void, Void> {
 
-        private PlayerDAO playerDAO;
+        private UserDao userDao;
 
-        private DeleteAsycTask(PlayerDAO playerDAO) {
-            this.playerDAO = playerDAO;
+        private DeleteAsycTask(UserDao userDao) {
+            this.userDao = userDao;
         }
 
         @Override
-        protected Void doInBackground(Void... voids) {
+        protected Void doInBackground(Void... players) {
 
-            playerDAO.deleteAllPlayers();
+            userDao.deleteAllUser();
 
             return null;
         }
@@ -110,7 +114,7 @@ public class PlayerRepository {
                         Request originalRequest = chain.request();
 
                         Request.Builder builder = originalRequest.newBuilder()
-                                .addHeader("Authorization", "Bearer " + MainActivity.token_var);
+                                .addHeader("Authorization", "Bearer " + LoginActivity.Token_var);
 
                         Request newRequest = builder.build();
                         return chain.proceed(newRequest);
@@ -127,18 +131,17 @@ public class PlayerRepository {
         return retrofit.create(GamesNewsApi.class);
     }
 
-    private DisposableSingleObserver<List<PlayerDataApi>> getPlayersObservers(){
-        return  new DisposableSingleObserver<List<PlayerDataApi>>() {
+    private DisposableSingleObserver<UserDataApi> getUserObserver(){
+        return new DisposableSingleObserver<UserDataApi>() {
             @Override
-            public void onSuccess(List<PlayerDataApi> players) {
-                for(PlayerDataApi player: players){
-                    insertPlayer(new Player(
-                            player.get_id(),
-                            player.getName(),
-                            player.getAvatar(),
-                            player.getBiografia(),
-                            player.getGame()));
-                }
+            public void onSuccess(UserDataApi value) {
+                insertUser(new User(
+                        value.get_id(),
+                        value.getUser(),
+                        value.getPassword(),
+                        value.getAvatar(),
+                        value.getCreatedDate()
+                ));
             }
 
             @Override

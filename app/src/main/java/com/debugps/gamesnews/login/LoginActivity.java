@@ -37,6 +37,7 @@ public class LoginActivity extends AppCompatActivity {
      */
     public static String SHARED_TOKEN_KEY = "TOKEN_KEY_SHARED";
 
+    public static String Token_var = "";
     private TokenAcceso token;
 
     private EditText username;
@@ -55,10 +56,10 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        String token_buff = getPreferences(Context.MODE_PRIVATE).getString(SHARED_TOKEN_KEY, "");
+        Token_var = getPreferences(Context.MODE_PRIVATE).getString(SHARED_TOKEN_KEY, "");
 
-        if(!token_buff.equals("")){
-            token = new TokenAcceso(token_buff);
+        if(!Token_var.equals("")){
+            token = new TokenAcceso(Token_var);
             startMainActivity(token);
         }
 
@@ -126,6 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(SHARED_TOKEN_KEY, token.getToken());
                     editor.apply();
+                    Token_var = token.getToken();
                     startMainActivity(token);
                     //Log.i("Token", token.getToken());
                 }else{

@@ -9,6 +9,7 @@ import com.debugps.gamesnews.roomTools.DAO.CategoryDAO;
 import com.debugps.gamesnews.roomTools.DAO.FavoriteListDAO;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
 import com.debugps.gamesnews.roomTools.DAO.PlayerDAO;
+import com.debugps.gamesnews.roomTools.DAO.UserDao;
 import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
@@ -53,5 +54,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
     public abstract PlayerDAO playerDAO();
 
     public abstract FavoriteListDAO favoriteListDAO();
+
+    public abstract UserDao userDao();
 
 }
