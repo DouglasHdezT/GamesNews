@@ -6,16 +6,18 @@ import android.arch.persistence.room.RoomDatabase;
 import android.content.Context;
 
 import com.debugps.gamesnews.roomTools.DAO.CategoryDAO;
+import com.debugps.gamesnews.roomTools.DAO.FavoriteListDAO;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
 import com.debugps.gamesnews.roomTools.DAO.PlayerDAO;
 import com.debugps.gamesnews.roomTools.POJO.Category;
+import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
 
 /**
  * Clase encargada de Instanciar la base de datos para la App
  */
-@Database(entities = {New.class, Category.class, Player.class}, version = 4)
+@Database(entities = {New.class, Category.class, Player.class, FavoriteList.class}, version = 5)
 public abstract class NewRoomDatabase extends RoomDatabase {
 
     private static NewRoomDatabase INSTANCE;
@@ -49,5 +51,7 @@ public abstract class NewRoomDatabase extends RoomDatabase {
     public abstract CategoryDAO categoryDAO();
 
     public abstract PlayerDAO playerDAO();
+
+    public abstract FavoriteListDAO favoriteListDAO();
 
 }

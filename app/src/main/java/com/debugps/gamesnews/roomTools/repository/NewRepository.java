@@ -74,18 +74,15 @@ public class NewRepository {
         return mAllNews;
     }
 
+    public New getANew(String id){
+        return newDao.getANew(id);
+    }
+
     public void refreshNews(){
         compositeDisposable.add(gamesNewsApi.getAllNews()
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getNewsObserver()));
-    }
-
-    public void getUserFavList(){
-        compositeDisposable.add(gamesNewsApi.getUserFavs()
-                .subscribeOn(Schedulers.io())
-                .observeOn(AndroidSchedulers.mainThread())
-                .subscribeWith(getFavListObserver()));
     }
 
     /**
@@ -247,24 +244,6 @@ public class NewRepository {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
-            }
-        };
-    }
-
-    private DisposableSingleObserver<FavArrayListDataApi> getFavListObserver(){
-        return  new DisposableSingleObserver<FavArrayListDataApi>() {
-            @Override
-            public void onSuccess(FavArrayListDataApi Datalist) {
-                ArrayList<String> list = Datalist.getFav_list();
-                for(String value: list){
-                    Log.d("PUTO EL QUE LO LEA", value);
-                }
-
-            }
-
-            @Override
-            public void onError(Throwable e) {
-                Log.d("PUTO EL QUE LO LEA", "cague");
             }
         };
     }

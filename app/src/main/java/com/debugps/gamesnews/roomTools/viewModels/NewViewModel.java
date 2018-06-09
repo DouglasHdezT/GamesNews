@@ -34,6 +34,10 @@ public class NewViewModel extends AndroidViewModel {
         favNews = mNewRepository.getFavNews();
     }
 
+    public New getANew(String id){
+        return mNewRepository.getANew(id);
+    }
+
     /**
      * Metodo para insertar una nueva noticia.
      * @param new_var Noticia nueva.
@@ -59,10 +63,6 @@ public class NewViewModel extends AndroidViewModel {
 
     public void refreshNews(){
         mNewRepository.refreshNews();
-    }
-
-    public void getUserFavList(){
-        mNewRepository.getUserFavList();
     }
 
     /**
