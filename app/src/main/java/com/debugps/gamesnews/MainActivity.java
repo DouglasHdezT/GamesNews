@@ -25,6 +25,7 @@ import android.view.View;
 import android.widget.SearchView;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
+import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.dialogs.PlayerDialog;
@@ -37,17 +38,35 @@ import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
+import com.debugps.gamesnews.roomTools.POJO.User;
 import com.debugps.gamesnews.roomTools.viewModels.CategoryViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.FavoriteListViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
+import com.debugps.gamesnews.roomTools.viewModels.UserViewModel;
 import com.debugps.gamesnews.tools.CustomGridLayoutManager;
 import com.debugps.gamesnews.tools.RefreshAsyncTask;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 import java.util.concurrent.ExecutionException;
+
+import io.reactivex.Scheduler;
+import io.reactivex.android.schedulers.AndroidSchedulers;
+import io.reactivex.disposables.CompositeDisposable;
+import io.reactivex.observers.DisposableSingleObserver;
+import io.reactivex.schedulers.Schedulers;
+import okhttp3.Interceptor;
+import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
+import retrofit2.Retrofit;
+import retrofit2.adapter.rxjava2.RxJava2CallAdapterFactory;
+import retrofit2.converter.gson.GsonConverterFactory;
 
 /**
  * Clase encargada del flujo principal, tanto logico como grafico, de toda la Aplicacion.
@@ -73,10 +92,15 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private ArrayList<String> games_names = new ArrayList<>();
     private ArrayList<String> styled_names;
 
+    private User mainUser;
+    private GamesNewsApi gamesNewsApi;
+    CompositeDisposable compositeDisposable = new CompositeDisposable();
+
     private NewViewModel newViewModel;
     private CategoryViewModel categoryViewModel;
     private PlayerViewModel playerViewModel;
     private FavoriteListViewModel favoriteListViewModel;
+    private UserViewModel userViewModel;
 
     /**
      * Metodo encargado de la creacion y asignacion de valores a los componentes, logicos y graficos, en la actividad Main.
@@ -100,11 +124,15 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
         Log.d("token", token_var);
 
+        gamesNewsApi = createGamesNewApi();
+
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
         playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
         favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
+        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
+        userViewModel.refreshUsers();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
         playerViewModel.refreshPlayers();
@@ -122,6 +150,15 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     @Override
     protected void onResume() {
         super.onResume();
+
+        userViewModel.getUser_list().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(@Nullable List<User> users) {
+                if (users != null && users.size()>0) {
+                    mainUser = users.get(0);
+                }
+            }
+        });
 
         newViewModel.getAllNews().observe(this, new Observer<List<New>>() {
             @Override
@@ -322,6 +359,35 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         ft.commit();
     }
 
+    private GamesNewsApi createGamesNewApi(){
+        Gson gson = new GsonBuilder()
+                .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
+                .create();
+
+        OkHttpClient okHttpClient = new OkHttpClient.Builder()
+                .addInterceptor(new Interceptor() {
+                    @Override
+                    public Response intercept(Chain chain) throws IOException {
+                        Request originalRequest = chain.request();
+
+                        Request.Builder builder = originalRequest.newBuilder()
+                                .addHeader("Authorization", "Bearer " + LoginActivity.Token_var);
+
+                        Request newRequest = builder.build();
+                        return chain.proceed(newRequest);
+                    }
+                }).build();
+
+        Retrofit retrofit = new Retrofit.Builder()
+                .baseUrl(GamesNewsApi.ENDPOINT)
+                .client(okHttpClient)
+                .addCallAdapterFactory(RxJava2CallAdapterFactory.create())
+                .addConverterFactory(GsonConverterFactory.create(gson))
+                .build();
+
+        return retrofit.create(GamesNewsApi.class);
+    }
+
     /**
      * Metodo implementado de la interfaz para verificar si existe internet
      * @return Boolenao para verificar si existe internet o no.
@@ -379,6 +445,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     @Override
     public void setFavorited(String id) {
+        compositeDisposable.add(gamesNewsApi.PostFavToList(mainUser.getId(), id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getInsDelObserver()));
         newViewModel.setFav(id);
         favoriteListViewModel.insertFavNew(id);
     }
@@ -389,6 +459,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     @Override
     public void unsetFavorited(String id) {
+        compositeDisposable.add(gamesNewsApi.deleteFavFromList(mainUser.getId(), id)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getInsDelObserver()));
         favoriteListViewModel.deleteFavNew(id);
         newViewModel.unsetFav(id);
     }
@@ -457,5 +531,19 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         }
 
         return idColor;
+    }
+
+    private DisposableSingleObserver<Void> getInsDelObserver(){
+        return new DisposableSingleObserver<Void>() {
+            @Override
+            public void onSuccess(Void value) {
+                Log.d("MSM", "Succed");
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
+            }
+        };
     }
 }

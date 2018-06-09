@@ -10,10 +10,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Single;
+import retrofit2.http.Body;
 import retrofit2.http.DELETE;
 import retrofit2.http.Field;
 import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
+import retrofit2.http.HTTP;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 
@@ -67,9 +69,11 @@ public interface GamesNewsApi {
     @GET("/users/detail")
     Single<FavArrayListDataApi> getUserFavs();
 
-    @DELETE("/users/{id_user}/fav")
-    void deleteFavFromList(@Path("id_user") String id_user, @Field("new") String id_new);
+    @HTTP(method = "DELETE",path="/users/{id_user}/fav", hasBody = true)
+    @FormUrlEncoded
+    Single<Void> deleteFavFromList(@Path("id_user") String id_user, @Field("new") String id_new);
 
     @POST("/users/{id_user}/fav")
-    void PostFavToList(@Path("id_user") String id_user, @Field("new") String id_new);
+    @FormUrlEncoded
+    Single<Void> PostFavToList(@Path("id_user") String id_user, @Field("new") String id_new);
 }

@@ -14,11 +14,12 @@ import com.debugps.gamesnews.roomTools.POJO.Category;
 import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.POJO.Player;
+import com.debugps.gamesnews.roomTools.POJO.User;
 
 /**
  * Clase encargada de Instanciar la base de datos para la App
  */
-@Database(entities = {New.class, Category.class, Player.class, FavoriteList.class}, version = 5)
+@Database(entities = {New.class, Category.class, Player.class, FavoriteList.class, User.class}, version = 6)
 public abstract class NewRoomDatabase extends RoomDatabase {
 
     private static NewRoomDatabase INSTANCE;

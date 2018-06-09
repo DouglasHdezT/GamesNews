@@ -1,5 +1,6 @@
 package com.debugps.gamesnews.login;
 
+import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +16,7 @@ import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.R;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.roomTools.viewModels.UserViewModel;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
@@ -47,6 +49,8 @@ public class LoginActivity extends AppCompatActivity {
 
     private GamesNewsApi gamesNewsApi;
     private CompositeDisposable compositeDisposable = new CompositeDisposable();
+
+    private UserViewModel userViewModel;
 
     /**
      * Metodo sobreescrito encargado del flujo principal de la actividad "Login"
@@ -128,6 +132,8 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(SHARED_TOKEN_KEY, token.getToken());
                     editor.apply();
                     Token_var = token.getToken();
+                    userViewModel = ViewModelProviders.of(LoginActivity.this).get(UserViewModel.class);
+                    userViewModel.refreshUsers();
                     startMainActivity(token);
                     //Log.i("Token", token.getToken());
                 }else{
