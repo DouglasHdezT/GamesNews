@@ -61,6 +61,10 @@ public class NewViewModel extends AndroidViewModel {
         mNewRepository.refreshNews();
     }
 
+    public void getUserFavList(){
+        mNewRepository.getUserFavList();
+    }
+
     /**
      * Metodo para obtener todas la noticias.
      * @return LiveData con las noticias.

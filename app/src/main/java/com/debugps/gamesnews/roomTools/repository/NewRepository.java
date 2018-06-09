@@ -3,10 +3,13 @@ package com.debugps.gamesnews.roomTools.repository;
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
 import android.os.AsyncTask;
+import android.util.Log;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
+import com.debugps.gamesnews.api.data.FavArrayListDataApi;
 import com.debugps.gamesnews.api.data.NewDataAPI;
+import com.debugps.gamesnews.api.deserilizers.FavGSONDeserializer;
 import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
 import com.debugps.gamesnews.roomTools.POJO.New;
@@ -15,6 +18,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Scheduler;
@@ -75,6 +79,13 @@ public class NewRepository {
                 .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getNewsObserver()));
+    }
+
+    public void getUserFavList(){
+        compositeDisposable.add(gamesNewsApi.getUserFavs()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getFavListObserver()));
     }
 
     /**
@@ -182,6 +193,7 @@ public class NewRepository {
      */
     private GamesNewsApi createGamesNewApi(){
         Gson gson = new GsonBuilder()
+                .registerTypeAdapter(FavArrayListDataApi.class, new FavGSONDeserializer())
                 .setDateFormat("yyyy-MM-dd'T'HH:mm:ssZ")
                 .create();
 
@@ -235,6 +247,24 @@ public class NewRepository {
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+            }
+        };
+    }
+
+    private DisposableSingleObserver<FavArrayListDataApi> getFavListObserver(){
+        return  new DisposableSingleObserver<FavArrayListDataApi>() {
+            @Override
+            public void onSuccess(FavArrayListDataApi Datalist) {
+                ArrayList<String> list = Datalist.getFav_list();
+                for(String value: list){
+                    Log.d("PUTO EL QUE LO LEA", value);
+                }
+
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.d("PUTO EL QUE LO LEA", "cague");
             }
         };
     }

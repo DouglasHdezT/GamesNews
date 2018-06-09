@@ -104,6 +104,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
         playerViewModel.refreshPlayers();
+        newViewModel.getUserFavList();
 
         toolbar.setTitle(R.string.main_menu_title);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();

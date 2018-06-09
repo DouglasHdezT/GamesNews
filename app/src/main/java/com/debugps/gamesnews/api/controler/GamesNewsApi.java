@@ -1,9 +1,12 @@
 package com.debugps.gamesnews.api.controler;
 
+import com.debugps.gamesnews.api.data.FavArrayListDataApi;
 import com.debugps.gamesnews.api.data.NewDataAPI;
 import com.debugps.gamesnews.api.data.PlayerDataApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.api.data.UserDataApi;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import io.reactivex.Single;
@@ -55,4 +58,10 @@ public interface GamesNewsApi {
      */
     @GET("/players")
     Single<List<PlayerDataApi>> getAllPlayers();
+
+    @GET("/users/detail")
+    Single<UserDataApi> getUserInfo();
+
+    @GET("/users/detail")
+    Single<FavArrayListDataApi> getUserFavs();
 }
