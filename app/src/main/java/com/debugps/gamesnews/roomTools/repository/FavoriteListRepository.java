@@ -54,7 +54,8 @@ public class FavoriteListRepository {
     }
 
     public void refreshFavs(){
-        compositeDisposable.add(gamesNewsApi.getUserFavs().subscribeOn(Schedulers.io())
+        compositeDisposable.add(gamesNewsApi.getUserFavs()
+                .subscribeOn(Schedulers.io())
                 .observeOn(AndroidSchedulers.mainThread())
                 .subscribeWith(getFavRefreshObserver()));
     }
@@ -175,7 +176,7 @@ public class FavoriteListRepository {
             @Override
             public void onSuccess(FavArrayListDataApi values) {
                 for(String value: values.getFav_list()){
-                    Log.d("hola", value);
+                    //Log.d("hola", value);
                     insertFavNew(value);
                 }
             }

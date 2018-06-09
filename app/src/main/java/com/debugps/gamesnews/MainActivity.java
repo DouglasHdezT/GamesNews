@@ -106,9 +106,9 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
 
         newViewModel.refreshNews();
-        favoriteListViewModel.refreshFavorites();
         categoryViewModel.refreshCategories();
         playerViewModel.refreshPlayers();
+        favoriteListViewModel.refreshFavorites();
 
         toolbar.setTitle(R.string.main_menu_title);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
@@ -136,6 +136,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             public void onChanged(@Nullable List<FavoriteList> favoriteLists) {
                 if (favoriteLists != null) {
                     for(int i=0; i < favoriteLists.size(); i++){
+                        Log.d("for", favoriteLists.get(i).getId());
                         newViewModel.setFav(favoriteLists.get(i).getId());
                     }
                 }
@@ -344,8 +345,10 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         playerViewModel.deleteAllPlayers();
         newViewModel.deleteAllNews();
         categoryViewModel.deleteAllCategories();
+        favoriteListViewModel.deleteAllFavNews();
 
         playerViewModel.refreshPlayers();
+        favoriteListViewModel.refreshFavorites();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
     }
@@ -372,22 +375,22 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
     /**
      * Metodo para settear una noticia como favorita.
-     * @param newFavorited
+     * @param id
      */
     @Override
-    public void setFavorited(New newFavorited) {
-        newFavorited.setFavorited(1);
-        newViewModel.insertNew(newFavorited);
+    public void setFavorited(String id) {
+        newViewModel.setFav(id);
+        favoriteListViewModel.insertFavNew(id);
     }
 
     /**
      * Metodo para desettear una noticia como favorita
-     * @param newFavorited
+     * @param id
      */
     @Override
-    public void unsetFavorited(New newFavorited) {
-        newFavorited.setFavorited(0);
-        newViewModel.insertNew(newFavorited);
+    public void unsetFavorited(String id) {
+        favoriteListViewModel.deleteFavNew(id);
+        newViewModel.unsetFav(id);
     }
 
     /**

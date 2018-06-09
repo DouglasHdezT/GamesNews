@@ -105,10 +105,10 @@ public class NewsDialog extends DialogFragment {
             public void onClick(View v) {
                 if(new_var.getFavorited() == 1){
                     fav_btn.setImageResource(R.drawable.ic_fav_white);
-                    tools.unsetFavorited(new_var);
+                    tools.unsetFavorited(new_var.get_id());
                 }else{
                     fav_btn.setImageResource(R.drawable.ic_fav_red);
-                    tools.setFavorited(new_var);
+                    tools.setFavorited(new_var.get_id());
                 }
             }
         });

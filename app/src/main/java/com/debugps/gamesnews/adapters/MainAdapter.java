@@ -3,6 +3,7 @@ package com.debugps.gamesnews.adapters;
 import android.support.annotation.NonNull;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -79,6 +80,7 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
         }
 
         if(newList.get(position).getFavorited() == 1){
+            //Log.d("Adapter", newList.get(position).getFavorited()+" "+newList.get(position).getTitle());
             holder.favorited.setImageResource(R.drawable.ic_fav_red);
         }else{
             holder.favorited.setImageResource(R.drawable.ic_fav_gray);
@@ -98,9 +100,9 @@ public class MainAdapter extends RecyclerView.Adapter<MainAdapter.MainViewHolder
             @Override
             public void onClick(View v) {
                 if(newList.get(position).getFavorited() == 1){
-                    tools.unsetFavorited(newList.get(position));
+                    tools.unsetFavorited(newList.get(position).get_id());
                 }else {
-                    tools.setFavorited(newList.get(position));
+                    tools.setFavorited(newList.get(position).get_id());
                 }
             }
         });

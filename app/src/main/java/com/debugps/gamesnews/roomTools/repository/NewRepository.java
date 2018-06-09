@@ -79,6 +79,7 @@ public class NewRepository {
     }
 
     public void setFav(String id){
+
         new UpdateAsyncTask(newDao).execute("set",id);
     }
 
