@@ -43,6 +43,7 @@ public class NewRepository {
 
     private NewDao newDao;
     private LiveData<Double> cant_news;
+    private LiveData<List<String>> coverImages;
     private LiveData<List<New>> mAllNews;
     private LiveData<List<New>> favNews;
     private LiveData<List<New>> newsPerGame;
@@ -110,6 +111,10 @@ public class NewRepository {
     public LiveData<List<New>> getNewsPerGame(String name) {
         newsPerGame = newDao.getNewsFromGame(name);
         return newsPerGame;
+    }
+
+    public LiveData<List<String>> getCoverImages(String game_name) {
+        return newDao.getImagesResources(game_name);
     }
 
     public LiveData<List<New>> getFavNews() {

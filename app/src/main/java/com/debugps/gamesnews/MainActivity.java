@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
@@ -132,15 +133,22 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
-        userViewModel.refreshUsers();
-        newViewModel.refreshNews();
-        categoryViewModel.refreshCategories();
-        playerViewModel.refreshPlayers();
-        favoriteListViewModel.refreshFavorites();
+        if(isNetworkAvailable()) {
+            userViewModel.refreshUsers();
+            newViewModel.refreshNews();
+            categoryViewModel.refreshCategories();
+            playerViewModel.refreshPlayers();
+            favoriteListViewModel.refreshFavorites();
+            Log.d("NETWORK", "Con inter");
+        }else{
+            Toast.makeText(this,"Sin inter", Toast.LENGTH_SHORT).show();
+        }
+
+
 
         toolbar.setTitle(R.string.main_menu_title);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, new CustomGridLayoutManager(this)));
+        ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, 1));
         ft.commit();
     }
 
@@ -295,12 +303,12 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                 drawerLayout.closeDrawers();
                 switch (item.getItemId()){
                     case R.id.drawer_menu_news:
-                        setUpMainFragment(RecyclerViewFragment.newInstance(mainAdapter, new CustomGridLayoutManager(MainActivity.this)));
+                        setUpMainFragment(RecyclerViewFragment.newInstance(mainAdapter, 1));
                         toolbar.setTitle(R.string.main_menu_title);
                         //Log.d("Name", "News");
                         break;
                     case R.id.drawer_menu_fav:
-                        setUpMainFragment(RecyclerViewFragment.newInstance(favoritesAdapter, new LinearLayoutManager(MainActivity.this)));
+                        setUpMainFragment(RecyclerViewFragment.newInstance(favoritesAdapter, 2));
                         toolbar.setTitle(R.string.main_menu_fav);
                         //Log.d("Name", "Fav");
                         break;
@@ -394,10 +402,11 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     @Override
     public boolean isNetworkAvailable() {
-        ConnectivityManager connectivityManager
-                = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
-        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
-        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo info = cm.getActiveNetworkInfo();
+        if (info == null) return false;
+        NetworkInfo.State network = info.getState();
+        return (network == NetworkInfo.State.CONNECTED || network == NetworkInfo.State.CONNECTING);
     }
 
     /**

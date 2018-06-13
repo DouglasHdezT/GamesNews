@@ -74,4 +74,7 @@ public interface NewDao {
      */
     @Query("SELECT * FROM new_table WHERE favorited = 1")
     LiveData<List<New>> getFavoritesNews();
+
+    @Query("SELECT coverImage FROM new_table WHERE coverImage != \"\" AND game = :game_name ORDER BY createdDate DESC")
+    LiveData<List<String>> getImagesResources(String game_name);
 }

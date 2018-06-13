@@ -29,4 +29,5 @@
     <string name="refresh_succ">Refresh Succeed</string>
     <string name="created_date_text">Created date</string>
     <string name="biography_text">Biography:</string>
+    <string name="gallery_tab_layout">Gallery</string>
 </resources>

@@ -21,6 +21,7 @@ public class NewViewModel extends AndroidViewModel {
     private LiveData<List<New>> mAllNews;
     private LiveData<List<New>> favNews;
     private LiveData<List<New>> newsPerGame;
+    private LiveData<List<String>> coverImages;
 
     /**
      * Constructor del Modelo que instacia un Repositorio y parametros de uso comun.
@@ -83,6 +84,10 @@ public class NewViewModel extends AndroidViewModel {
 
     public LiveData<List<New>> getFavNews() {
         return favNews;
+    }
+
+    public LiveData<List<String>> getCoverImages(String game_name) {
+        return mNewRepository.getCoverImages(game_name);
     }
 
     /**

@@ -10,12 +10,16 @@ import android.support.annotation.Nullable;
 import android.support.design.widget.TabLayout;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
+import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.LinearLayoutManager;
+import android.util.Log;
+import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.debugps.gamesnews.R;
+import com.debugps.gamesnews.adapters.GalleryAdapter;
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.adapters.PagerAdapter;
 import com.debugps.gamesnews.adapters.PlayerListAdapter;
@@ -35,6 +39,7 @@ public class NewsPerGameFragment extends Fragment {
     private String gameQuery;
     private MainAdapter newsAdapter;
     private PlayerListAdapter playersAdapter;
+    private GalleryAdapter galleryAdapter;
 
     private TabLayout tabLayout;
     private ViewPager viewPager;
@@ -55,15 +60,16 @@ public class NewsPerGameFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mPagerAdapter = new PagerAdapter(getFragmentManager());
+        mPagerAdapter = new PagerAdapter(getChildFragmentManager());
         newsAdapter = new MainAdapter(tools);
         playersAdapter = new PlayerListAdapter(tools);
+        galleryAdapter = new GalleryAdapter(tools);
     }
 
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.news_per_game_tab_layout, container, false);
+        final View view = inflater.inflate(R.layout.news_per_game_tab_layout, container, false);
 
         newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
         playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
@@ -85,8 +91,16 @@ public class NewsPerGameFragment extends Fragment {
             }
         });
 
-        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(newsAdapter, new CustomGridLayoutManager(this.getContext())), getString(R.string.games_general));
-        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(playersAdapter, new LinearLayoutManager(this.getContext())), getString(R.string.games_players));
+        newViewModel.getCoverImages(gameQuery).observe(this, new Observer<List<String>>() {
+            @Override
+            public void onChanged(@Nullable List<String> strings) {
+                galleryAdapter.setImage_list(strings);
+            }
+        });
+
+        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(newsAdapter, 1), getString(R.string.games_general));
+        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(playersAdapter, 2), getString(R.string.games_players));
+        mPagerAdapter.addFragmentToList(RecyclerViewFragment.newInstance(galleryAdapter, 3), getString(R.string.gallery_tab_layout));
 
         viewPager.setAdapter(mPagerAdapter);
 
