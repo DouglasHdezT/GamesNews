@@ -95,7 +95,10 @@ public class RecyclerViewFragment extends Fragment {
     }
 
     @Override
-    public void onAttachFragment(Fragment childFragment) {
-        super.onAttachFragment(childFragment);
+    public void onAttach(Context context) {
+        super.onAttach(context);
+        if(context instanceof MainTools){
+            mainTools = (MainTools) context;
+        }
     }
 }

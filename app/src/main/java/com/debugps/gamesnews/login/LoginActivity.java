@@ -60,7 +60,7 @@ public class LoginActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        Token_var = getPreferences(Context.MODE_PRIVATE).getString(SHARED_TOKEN_KEY, "");
+        Token_var = getApplicationContext().getSharedPreferences("Shared",Context.MODE_PRIVATE).getString(SHARED_TOKEN_KEY, "");
 
         if(!Token_var.equals("")){
             token = new TokenAcceso(Token_var);
@@ -127,7 +127,7 @@ public class LoginActivity extends AppCompatActivity {
                 token = value;
 
                 if(token.getToken() != null){
-                    SharedPreferences sharedPreferences = LoginActivity.this.getPreferences(Context.MODE_PRIVATE);
+                    SharedPreferences sharedPreferences = LoginActivity.this.getApplicationContext().getSharedPreferences("Shared",Context.MODE_PRIVATE);
                     SharedPreferences.Editor editor = sharedPreferences.edit();
                     editor.putString(SHARED_TOKEN_KEY, token.getToken());
                     editor.apply();

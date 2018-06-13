@@ -4,6 +4,7 @@ import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -134,11 +135,11 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
 
         if(isNetworkAvailable()) {
-            userViewModel.refreshUsers();
             newViewModel.refreshNews();
+            userViewModel.refreshUsers();
             categoryViewModel.refreshCategories();
             playerViewModel.refreshPlayers();
-            favoriteListViewModel.refreshFavorites();
+            //favoriteListViewModel.refreshFavorites();
             Log.d("NETWORK", "Con inter");
         }else{
             Toast.makeText(this,"Sin inter", Toast.LENGTH_SHORT).show();
@@ -316,6 +317,9 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                         toolbar.setTitle(R.string.main_menu_settings);
                         //Log.d("Name", "Settings");
                         break;
+                    case R.id.drawer_menu_exit:
+                        logoutUser();
+                        break;
                     default:
                         for(int i=0; i<games_names.size(); i++){
                             if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
@@ -423,9 +427,9 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         favoriteListViewModel.deleteAllFavNews();
 
         playerViewModel.refreshPlayers();
-        favoriteListViewModel.refreshFavorites();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
+        //favoriteListViewModel.refreshFavorites();
     }
 
     /**
@@ -540,6 +544,18 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         }
 
         return idColor;
+    }
+
+    public void logoutUser(){
+        playerViewModel.deleteAllPlayers();
+        newViewModel.deleteAllNews();
+        categoryViewModel.deleteAllCategories();
+        favoriteListViewModel.deleteAllFavNews();
+        userViewModel.deleteAll();
+        MainActivity.this.getApplicationContext()
+                .getSharedPreferences("Shared",Context.MODE_PRIVATE)
+                .edit().clear().commit();
+        MainActivity.this.startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
     private DisposableSingleObserver<Void> getInsDelObserver(){

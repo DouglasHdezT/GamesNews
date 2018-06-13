@@ -31,6 +31,11 @@
                         android:id="@+id/drawer_menu_settings"
                         android:title="@string/drawer_menu_settings"
                         />
+                    <item android:icon="@drawable/ic_exit"
+                        android:id="@+id/drawer_menu_exit"
+                        android:title="@string/drawer_menu_logout"
+
+                        />
                 </group>
             </menu>
         </item>

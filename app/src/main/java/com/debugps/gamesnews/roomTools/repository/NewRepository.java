@@ -11,7 +11,9 @@ import com.debugps.gamesnews.api.data.FavArrayListDataApi;
 import com.debugps.gamesnews.api.data.NewDataAPI;
 import com.debugps.gamesnews.api.deserilizers.FavGSONDeserializer;
 import com.debugps.gamesnews.interfaces.MainTools;
+import com.debugps.gamesnews.roomTools.DAO.FavoriteListDAO;
 import com.debugps.gamesnews.roomTools.DAO.NewDao;
+import com.debugps.gamesnews.roomTools.POJO.FavoriteList;
 import com.debugps.gamesnews.roomTools.POJO.New;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
 import com.google.gson.Gson;
@@ -42,6 +44,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class NewRepository {
 
     private NewDao newDao;
+    private FavoriteListDAO favoriteListDAO;
     private LiveData<Double> cant_news;
     private LiveData<List<String>> coverImages;
     private LiveData<List<New>> mAllNews;
@@ -59,6 +62,7 @@ public class NewRepository {
 
         NewRoomDatabase db = NewRoomDatabase.getDatabaseInstance(application);
         newDao =  db.newDao();
+        favoriteListDAO = db.favoriteListDAO();
 
         cant_news = newDao.getCantNews();
         mAllNews = newDao.getAllNews();
@@ -127,6 +131,17 @@ public class NewRepository {
      */
     public void insertNew(New new_var){
         new InsertAsyncTask(newDao).execute(new_var);
+    }
+
+    public void insertFav(String id){
+        new InsertFavAsynTask(favoriteListDAO).execute(new FavoriteList((id)));
+    }
+
+    public void refreshFavs(){
+        compositeDisposable.add(gamesNewsApi.getUserFavs()
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .subscribeWith(getFavRefreshObserver()));
     }
 
     /**
@@ -202,6 +217,21 @@ public class NewRepository {
         }
     }
 
+    private static class InsertFavAsynTask extends AsyncTask<FavoriteList, Void, Void>{
+
+        private FavoriteListDAO dao;
+
+        public InsertFavAsynTask(FavoriteListDAO dao) {
+            this.dao = dao;
+        }
+
+        @Override
+        protected Void doInBackground(FavoriteList... favoriteLists) {
+            dao.insertFavNew(favoriteLists[0]);
+            return null;
+        }
+    }
+
     /**
      * Metodo que instancia la API para realizar las peticiones.
      * @return GamesNewsAPI para realizar peticiones
@@ -257,11 +287,29 @@ public class NewRepository {
                             MainActivity.getColorId(),
                             new_var.get__v()));
                 }
+                refreshFavs();
             }
 
             @Override
             public void onError(Throwable e) {
                 e.printStackTrace();
+            }
+        };
+    }
+
+    private DisposableSingleObserver<FavArrayListDataApi> getFavRefreshObserver(){
+        return new DisposableSingleObserver<FavArrayListDataApi>() {
+            @Override
+            public void onSuccess(FavArrayListDataApi values) {
+                for(String value: values.getFav_list()){
+                    //Log.d("hola", value);
+                    insertFav(value);
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+
             }
         };
     }
