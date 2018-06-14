@@ -32,4 +32,6 @@
     <string name="gallery_tab_layout">Gallery</string>
     <string name="drawer_menu_logout">Logout</string>
     <string name="token_rip_message">Session Expired!</string>
+    <string name="default_email">xxxxxxxxx@xxxxxx.xxxxxx</string>
+    <string name="default_name">Authentication needed</string>
 </resources>

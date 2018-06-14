@@ -23,6 +23,7 @@ import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
@@ -46,12 +47,14 @@ import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.UserViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.squareup.picasso.Picasso;
 
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -81,6 +84,9 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
     protected NavigationView navigationView;
+
+    private TextView drawer_name;
+    private CircleImageView drawer_image;
 
     private MainAdapter mainAdapter;
     private MainAdapter favoritesAdapter;
@@ -200,6 +206,22 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             }
         });
 
+        userViewModel.getUser_list().observe(this, new Observer<List<User>>() {
+            @Override
+            public void onChanged(@Nullable List<User> users) {
+                if(users != null){
+                    for(User user: users){
+                        drawer_name.setText(user.getUser());
+                        if(!user.getAvatar().equals("")) {
+                            Picasso.get().load(user.getAvatar())
+                                    .error(R.drawable.ic_person)
+                                    .into(drawer_image);
+                        }
+                    }
+                }
+            }
+        });
+
     }
 
     /**
@@ -249,6 +271,9 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         setSupportActionBar(toolbar);
         toolbar.setNavigationIcon(R.drawable.ic_menu);
         toolbar.setNavigationOnClickListener(drawerButtonListener());
+
+        drawer_image = navigationView.getHeaderView(0).findViewById(R.id.drawer_image);
+        drawer_name = navigationView.getHeaderView(0).findViewById(R.id.drawer_name);
     }
 
     private void setViewModelsUp(){
@@ -498,6 +523,8 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                 .getSharedPreferences("Shared",Context.MODE_PRIVATE)
                 .edit().clear().commit();
         MainActivity.this.startActivity(new Intent(MainActivity.this, LoginActivity.class));
+        MainActivity.this.finish();
+
     }
 
     @Override
