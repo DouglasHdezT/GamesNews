@@ -31,4 +31,5 @@
     <string name="biography_text">Biography:</string>
     <string name="gallery_tab_layout">Gallery</string>
     <string name="drawer_menu_logout">Logout</string>
+    <string name="token_rip_message">Session Expired!</string>
 </resources>

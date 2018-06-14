@@ -104,9 +104,11 @@ public class NewsDialog extends DialogFragment {
             @Override
             public void onClick(View v) {
                 if(new_var.getFavorited() == 1){
+                    new_var.setFavorited(0);
                     fav_btn.setImageResource(R.drawable.ic_fav_white);
                     tools.unsetFavorited(new_var.get_id());
                 }else{
+                    new_var.setFavorited(1);
                     fav_btn.setImageResource(R.drawable.ic_fav_red);
                     tools.setFavorited(new_var.get_id());
                 }

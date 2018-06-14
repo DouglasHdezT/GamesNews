@@ -2,16 +2,22 @@ package com.debugps.gamesnews.roomTools.repository;
 
 import android.app.Application;
 import android.arch.lifecycle.LiveData;
+import android.arch.lifecycle.ViewModel;
+import android.arch.lifecycle.ViewModelProvider;
 import android.os.AsyncTask;
+import android.support.annotation.NonNull;
 import android.support.design.widget.AppBarLayout;
+import android.util.Log;
 
 import com.debugps.gamesnews.MainActivity;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.UserDataApi;
+import com.debugps.gamesnews.interfaces.MainTools;
 import com.debugps.gamesnews.login.LoginActivity;
 import com.debugps.gamesnews.roomTools.DAO.UserDao;
 import com.debugps.gamesnews.roomTools.POJO.User;
 import com.debugps.gamesnews.roomTools.database.NewRoomDatabase;
+import com.debugps.gamesnews.roomTools.viewModels.UserViewModel;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -40,10 +46,13 @@ public class UserRepository {
     private CompositeDisposable compositeDisposable= new CompositeDisposable();
     private GamesNewsApi gamesNewsApi;
 
-    public UserRepository(Application application){
+    private MainTools tools;
+
+    public UserRepository(Application application, MainTools tools){
         userDao = NewRoomDatabase.getDatabaseInstance(application).userDao();
 
         user_list = userDao.getUser();
+        this.tools = tools;
 
         gamesNewsApi = createGamesNewApi();
     }
@@ -114,9 +123,14 @@ public class UserRepository {
                         Request originalRequest = chain.request();
 
                         Request.Builder builder = originalRequest.newBuilder()
-                                .addHeader("Authorization", "Bearer " + LoginActivity.Token_var);
+                                .addHeader("Authorization", "Bearer " + MainActivity.token_var);
 
                         Request newRequest = builder.build();
+
+                        Response response = chain.proceed(originalRequest);
+                        Log.d("asd",response.body().string());
+                        if(response.code() == 401){
+                        }
                         return chain.proceed(newRequest);
                     }
                 }).build();

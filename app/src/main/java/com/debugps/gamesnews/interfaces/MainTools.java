@@ -15,4 +15,7 @@ public interface MainTools {
     void showPlayerDialog(Player player);
     void setFavorited(String id);
     void unsetFavorited(String id);
+    void logoutUser();
+    void resetToken();
+    void prueba();
 }

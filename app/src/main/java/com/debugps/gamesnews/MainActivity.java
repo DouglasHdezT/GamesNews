@@ -3,6 +3,7 @@ package com.debugps.gamesnews;
 import android.arch.lifecycle.Observer;
 import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
@@ -14,6 +15,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.support.v7.widget.LinearLayoutManager;
@@ -481,6 +483,41 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     }
 
     /**
+     * Metodo para deslogear al usuario
+     */
+    @Override
+    public void logoutUser(){
+        playerViewModel.deleteAllPlayers();
+        newViewModel.deleteAllNews();
+        categoryViewModel.deleteAllCategories();
+        favoriteListViewModel.deleteAllFavNews();
+        userViewModel.deleteAll();
+        MainActivity.this.getApplicationContext()
+                .getSharedPreferences("Shared",Context.MODE_PRIVATE)
+                .edit().clear().commit();
+        MainActivity.this.startActivity(new Intent(MainActivity.this, LoginActivity.class));
+    }
+
+    @Override
+    public void resetToken() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(this);
+        builder.setMessage(R.string.token_rip_message)
+                .setCancelable(false)
+                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int id) {
+                        logoutUser();
+                    }
+                });
+        AlertDialog alert = builder.create();
+        alert.show();
+    }
+
+    @Override
+    public void prueba() {
+        Log.d("TOOLS", "Si funciona");
+    }
+
+    /**
      * Generador de colores al azar entre la paleta 700 Material Design
      * @return Id del color generado
      */
@@ -544,18 +581,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         }
 
         return idColor;
-    }
-
-    public void logoutUser(){
-        playerViewModel.deleteAllPlayers();
-        newViewModel.deleteAllNews();
-        categoryViewModel.deleteAllCategories();
-        favoriteListViewModel.deleteAllFavNews();
-        userViewModel.deleteAll();
-        MainActivity.this.getApplicationContext()
-                .getSharedPreferences("Shared",Context.MODE_PRIVATE)
-                .edit().clear().commit();
-        MainActivity.this.startActivity(new Intent(MainActivity.this, LoginActivity.class));
     }
 
     private DisposableSingleObserver<Void> getInsDelObserver(){
