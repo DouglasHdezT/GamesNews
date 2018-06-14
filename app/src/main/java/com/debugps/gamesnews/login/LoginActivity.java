@@ -132,8 +132,6 @@ public class LoginActivity extends AppCompatActivity {
                     editor.putString(SHARED_TOKEN_KEY, token.getToken());
                     editor.apply();
                     Token_var = token.getToken();
-                    userViewModel = ViewModelProviders.of(LoginActivity.this).get(UserViewModel.class);
-                    userViewModel.refreshUsers();
                     startMainActivity(token);
                     //Log.i("Token", token.getToken());
                 }else{

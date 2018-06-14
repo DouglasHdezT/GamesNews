@@ -54,6 +54,8 @@ public class UserRepository {
         user_list = userDao.getUser();
         this.tools = tools;
 
+        //this.tools.prueba();
+
         gamesNewsApi = createGamesNewApi();
     }
 
@@ -127,9 +129,11 @@ public class UserRepository {
 
                         Request newRequest = builder.build();
 
-                        Response response = chain.proceed(originalRequest);
+                        Response response = chain.proceed(newRequest);
                         Log.d("asd",response.body().string());
                         if(response.code() == 401){
+                            Log.d("asd",MainActivity.token_var);
+                            tools.resetToken();
                         }
                         return chain.proceed(newRequest);
                     }
@@ -160,7 +164,7 @@ public class UserRepository {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
         };
     }

@@ -5,7 +5,6 @@ import android.arch.lifecycle.ViewModelProviders;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
-import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.support.annotation.NonNull;
@@ -14,11 +13,9 @@ import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
@@ -33,7 +30,6 @@ import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.dialogs.PlayerDialog;
-import com.debugps.gamesnews.fragment.NewsMainFragment;
 import com.debugps.gamesnews.fragment.NewsPerGameFragment;
 import com.debugps.gamesnews.fragment.RecyclerViewFragment;
 import com.debugps.gamesnews.interfaces.MainTools;
@@ -48,8 +44,6 @@ import com.debugps.gamesnews.roomTools.viewModels.FavoriteListViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.NewViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.PlayerViewModel;
 import com.debugps.gamesnews.roomTools.viewModels.UserViewModel;
-import com.debugps.gamesnews.tools.CustomGridLayoutManager;
-import com.debugps.gamesnews.tools.RefreshAsyncTask;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -57,9 +51,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.ExecutionException;
 
-import io.reactivex.Scheduler;
 import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.CompositeDisposable;
 import io.reactivex.observers.DisposableSingleObserver;
@@ -130,11 +122,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
         gamesNewsApi = createGamesNewApi();
 
-        newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
-        categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
-        playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
-        favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
-        userViewModel = ViewModelProviders.of(this).get(UserViewModel.class);
+        setViewModelsUp();
 
         if(isNetworkAvailable()) {
             newViewModel.refreshNews();
@@ -263,6 +251,19 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         toolbar.setNavigationOnClickListener(drawerButtonListener());
     }
 
+    private void setViewModelsUp(){
+
+        UserViewModel.Factory Userfactory = new UserViewModel.Factory(
+                MainActivity.this.getApplication(), MainActivity.this
+        );
+
+        newViewModel = ViewModelProviders.of(this).get(NewViewModel.class);
+        categoryViewModel = ViewModelProviders.of(this).get(CategoryViewModel.class);
+        playerViewModel = ViewModelProviders.of(this).get(PlayerViewModel.class);
+        favoriteListViewModel = ViewModelProviders.of(this).get(FavoriteListViewModel.class);
+        userViewModel = ViewModelProviders.of(this, Userfactory).get(UserViewModel.class);
+    }
+
     /**
      * Metodo que define un listener para la logica de apertura y cierre del drawermenu
      * @return Listener para el drawer dentro del menu
@@ -385,7 +386,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                         Request originalRequest = chain.request();
 
                         Request.Builder builder = originalRequest.newBuilder()
-                                .addHeader("Authorization", "Bearer " + LoginActivity.Token_var);
+                                .addHeader("Authorization", "Bearer " + MainActivity.token_var);
 
                         Request newRequest = builder.build();
                         return chain.proceed(newRequest);
@@ -428,6 +429,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         categoryViewModel.deleteAllCategories();
         favoriteListViewModel.deleteAllFavNews();
 
+        userViewModel.refreshUsers();
         playerViewModel.refreshPlayers();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
@@ -500,16 +502,21 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
     @Override
     public void resetToken() {
-        AlertDialog.Builder builder = new AlertDialog.Builder(this);
-        builder.setMessage(R.string.token_rip_message)
-                .setCancelable(false)
-                .setPositiveButton("OK", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int id) {
-                        logoutUser();
-                    }
-                });
-        AlertDialog alert = builder.create();
-        alert.show();
+        MainActivity.this.runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                AlertDialog.Builder builder = new AlertDialog.Builder(MainActivity.this);
+                builder.setMessage(R.string.token_rip_message)
+                        .setCancelable(false)
+                        .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface dialog, int id) {
+                                logoutUser();
+                            }
+                        });
+                AlertDialog alert = builder.create();
+                alert.show();
+            }
+        });
     }
 
     @Override
