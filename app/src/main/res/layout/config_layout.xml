@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="utf-8"?>
+<ScrollView
+    android:id="@+id/config_main_view"
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_margin="16dp"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:textSize="30sp"
+            android:padding="8dp"
+            android:gravity="center"
+            android:textColor="@color/colorPrimaryDark"
+            android:fontFamily="@font/van_hel"
+            android:text="@string/reset_password_config"
+            android:layout_marginBottom="16dp"
+            />
+
+        <EditText
+            android:id="@+id/config_username"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:enabled="false"
+            android:text="@string/username_login"
+            android:gravity="center"
+            android:layout_marginBottom="64dp"
+            />
+
+        <EditText
+            android:id="@+id/config_pass_1"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/password_login"
+            android:gravity="center"
+            android:layout_marginBottom="8dp"
+            />
+
+        <EditText
+            android:id="@+id/config_pass_2"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:hint="@string/repeat_password_text"
+            android:gravity="center"
+            android:layout_marginBottom="64dp"
+            />
+
+        <Button
+            android:id="@+id/config_btn_submit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="@color/colorAccent"
+            android:textColor="@android:color/white"
+            android:textAppearance="@style/TextAppearance.AppCompat.Body2"
+            android:text="@string/submit_btn_text"
+            />
+
+    </LinearLayout>
+
+</ScrollView>

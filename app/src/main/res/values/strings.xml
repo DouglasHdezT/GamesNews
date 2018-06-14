@@ -34,4 +34,7 @@
     <string name="token_rip_message">Session Expired!</string>
     <string name="default_email">xxxxxxxxx@xxxxxx.xxxxxx</string>
     <string name="default_name">Authentication needed</string>
+    <string name="reset_password_config">RESET PASSWORD</string>
+    <string name="repeat_password_text">Repeat password</string>
+    <string name="submit_btn_text">SUBMIT</string>
 </resources>
