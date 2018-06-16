@@ -77,9 +77,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private final static int ID_ITEM_MENU_GAMES = 101010;
     private static final Random rn = new Random();
 
-    public static int REFRESH_DONE_NEWS;
-    public static int REFRESH_DONE_CATEGORIES;
-    public static int REFRESH_DONE_PLAYERS;
     public static int IN_REFRESH = 0;
 
     private Toolbar toolbar;
@@ -446,11 +443,60 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     @Override
     public void refreshAll() {
+        IN_REFRESH = 1;
+        favoriteListViewModel.getFavorite_list().observe(MainActivity.this, new Observer<List<FavoriteList>>() {
+            @Override
+            public void onChanged(@Nullable List<FavoriteList> favoriteLists) {
+
+                if(IN_REFRESH == 1){
+                    ArrayList<String> onlineList = favoriteListViewModel.getOnlineList();
+                    ArrayList<String> localList = new ArrayList<>();
+                    ArrayList<String> deleteList = new ArrayList<>(),addList = new ArrayList<>();
+                    if (onlineList != null && favoriteLists != null) {
+
+                        for(FavoriteList favorite: favoriteLists){
+                            localList.add(favorite.getId());
+                        }
+
+                        for(String localId: localList){
+                            if(!onlineList.contains(localId)){
+                                addList.add(localId);
+                            }
+                        }
+
+                        for(String onlineId: onlineList){
+                            if(!localList.contains(onlineId)){
+                                deleteList.add(onlineId);
+                            }
+                        }
+
+                        for(String id: deleteList){
+                            compositeDisposable.add(gamesNewsApi.deleteFavFromList(mainUser.getId(), id)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeWith(getInsDelObserver())
+                            );
+                        }
+
+                        for(String id: addList){
+                            compositeDisposable.add(gamesNewsApi.PostFavToList(mainUser.getId(), id)
+                                    .subscribeOn(Schedulers.io())
+                                    .observeOn(AndroidSchedulers.mainThread())
+                                    .subscribeWith(getInsDelObserver())
+                            );
+                        }
+                    }
+                }
+
+            }
+        });
+
         userViewModel.refreshUsers();
         playerViewModel.refreshPlayers();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
         favoriteListViewModel.refreshFavorites();
+        IN_REFRESH = 0;
     }
 
     /**
@@ -618,7 +664,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
             @Override
             public void onError(Throwable e) {
-
+                e.printStackTrace();
             }
         };
     }
