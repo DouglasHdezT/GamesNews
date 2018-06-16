@@ -117,6 +117,10 @@ public class NewRepository {
         return newsPerGame;
     }
 
+    public LiveData<List<New>> getNewsperQuery(String query){
+        return newDao.getSearchList(query);
+    }
+
     public LiveData<List<String>> getCoverImages(String game_name) {
         return newDao.getImagesResources(game_name);
     }

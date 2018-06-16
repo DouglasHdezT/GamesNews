@@ -44,4 +44,5 @@
     <string name="mismatch_error">Mismatch passwords</string>
     <string name="done_msg">Change completed</string>
     <string name="error_api">Something wrong</string>
+    <string name="search_value">Search</string>
 </resources>

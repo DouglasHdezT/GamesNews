@@ -22,7 +22,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.SubMenu;
 import android.view.View;
-import android.widget.SearchView;
+import android.support.v7.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -79,6 +79,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private static final Random rn = new Random();
 
     public static int IN_REFRESH = 0;
+    public static int IN_SEARCH = 0;
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -89,9 +90,12 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
     private MainAdapter mainAdapter;
     private MainAdapter favoritesAdapter;
+    private MainAdapter searchAdapter;
     private List<New> newList_main;
     private ArrayList<String> games_names = new ArrayList<>();
     private ArrayList<String> styled_names;
+
+    private RecyclerViewFragment searchFragment;
 
     private User mainUser;
     private GamesNewsApi gamesNewsApi;
@@ -135,8 +139,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             Toast.makeText(this,"Sin inter", Toast.LENGTH_SHORT).show();
         }
 
-
-
         toolbar.setTitle(R.string.main_menu_title);
         FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
         ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, 1));
@@ -149,6 +151,8 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     @Override
     protected void onResume() {
         super.onResume();
+
+        searchFragment = RecyclerViewFragment.newInstance(searchAdapter, 2);
 
         userViewModel.getUser_list().observe(this, new Observer<List<User>>() {
             @Override
@@ -229,6 +233,21 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         toolbar.inflateMenu(R.menu.main_toolbar_menu);
         SearchView searchView = (SearchView) menu.findItem(R.id.main_menu_search).getActionView();
 
+        searchView.setOnSearchClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                for(int i = 0;i< navigationView.getMenu().size(); i++){
+                    if(navigationView.getMenu().getItem(i).isChecked()){
+                        navigationView.getMenu().getItem(i).setChecked(false);
+                    }
+                }
+
+                toolbar.setTitle(R.string.search_value);
+
+                setUpMainFragment(searchFragment);
+            }
+        });
+
         searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener() {
             @Override
             public boolean onQueryTextSubmit(String query) {
@@ -237,7 +256,13 @@ public class MainActivity extends AppCompatActivity implements MainTools {
 
             @Override
             public boolean onQueryTextChange(String newText) {
-                return false;
+                newViewModel.getNewsPerSearch(newText).observe(MainActivity.this, new Observer<List<New>>() {
+                    @Override
+                    public void onChanged(@Nullable List<New> news) {
+                        searchAdapter.setNewList(news);
+                    }
+                });
+                return true;
             }
         });
 
@@ -250,6 +275,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private void setAdaptersUp(){
         mainAdapter = new MainAdapter((MainTools) this);
         favoritesAdapter = new MainAdapter((MainTools) this);
+        searchAdapter = new MainAdapter(this);
     }
 
     /**

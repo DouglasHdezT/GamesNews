@@ -39,6 +39,10 @@ public class NewViewModel extends AndroidViewModel {
         return mNewRepository.getANew(id);
     }
 
+    public LiveData<List<New>> getNewsPerSearch(String query){
+        return mNewRepository.getNewsperQuery(query);
+    }
+
     public void setFav(String id){
         mNewRepository.setFav(id);
     }
