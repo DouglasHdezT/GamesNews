@@ -17,6 +17,7 @@ import retrofit2.http.FormUrlEncoded;
 import retrofit2.http.GET;
 import retrofit2.http.HTTP;
 import retrofit2.http.POST;
+import retrofit2.http.PUT;
 import retrofit2.http.Path;
 
 
@@ -76,4 +77,8 @@ public interface GamesNewsApi {
     @POST("/users/{id_user}/fav")
     @FormUrlEncoded
     Single<Void> PostFavToList(@Path("id_user") String id_user, @Field("new") String id_new);
+
+    @PUT("/users/{id_user}")
+    @FormUrlEncoded
+    Single<UserDataApi> refreshPassword(@Path("id_user") String id, @Field("password") String newPass);
 }

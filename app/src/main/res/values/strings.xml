@@ -42,4 +42,6 @@
     <string name="current_pass_error">Current Password Incorrect</string>
     <string name="empty_fields_error">Empty fields</string>
     <string name="mismatch_error">Mismatch passwords</string>
+    <string name="done_msg">Change completed</string>
+    <string name="error_api">Something wrong</string>
 </resources>
