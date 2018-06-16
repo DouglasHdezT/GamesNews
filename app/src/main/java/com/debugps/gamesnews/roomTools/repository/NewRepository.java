@@ -274,6 +274,7 @@ public class NewRepository {
         return new DisposableSingleObserver<List<NewDataAPI>>() {
             @Override
             public void onSuccess(List<NewDataAPI> news_list) {
+                deleteAllNews();
                 for(NewDataAPI new_var: news_list){
                     insertNew(new New(
                             new_var.getId(),

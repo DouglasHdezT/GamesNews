@@ -153,6 +153,7 @@ public class UserRepository {
         return new DisposableSingleObserver<UserDataApi>() {
             @Override
             public void onSuccess(UserDataApi value) {
+                deleeteAllUsers();
                 insertUser(new User(
                         value.get_id(),
                         value.getUser(),

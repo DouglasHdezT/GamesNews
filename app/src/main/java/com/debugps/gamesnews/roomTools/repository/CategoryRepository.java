@@ -136,6 +136,7 @@ public class CategoryRepository {
         return new DisposableSingleObserver<List<String>>() {
             @Override
             public void onSuccess(List<String> strings) {
+                deleteAllCategories();
                 for(String value: strings){
                     insertCategory(new Category(value));
                 }

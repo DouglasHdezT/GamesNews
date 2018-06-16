@@ -175,6 +175,7 @@ public class FavoriteListRepository {
         return new DisposableSingleObserver<FavArrayListDataApi>() {
             @Override
             public void onSuccess(FavArrayListDataApi values) {
+                deleteAllFavNews();
                 for(String value: values.getFav_list()){
                     //Log.d("hola", value);
                     insertFavNew(value);

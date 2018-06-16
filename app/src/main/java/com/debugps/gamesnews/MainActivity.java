@@ -132,12 +132,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         setViewModelsUp();
 
         if(isNetworkAvailable()) {
-            newViewModel.refreshNews();
-            userViewModel.refreshUsers();
-            categoryViewModel.refreshCategories();
-            playerViewModel.refreshPlayers();
-            //favoriteListViewModel.refreshFavorites();
-            Log.d("NETWORK", "Con inter");
+            refreshAll();
         }else{
             Toast.makeText(this,"Sin inter", Toast.LENGTH_SHORT).show();
         }
@@ -451,16 +446,11 @@ public class MainActivity extends AppCompatActivity implements MainTools {
      */
     @Override
     public void refreshAll() {
-        playerViewModel.deleteAllPlayers();
-        newViewModel.deleteAllNews();
-        categoryViewModel.deleteAllCategories();
-        favoriteListViewModel.deleteAllFavNews();
-
         userViewModel.refreshUsers();
         playerViewModel.refreshPlayers();
         newViewModel.refreshNews();
         categoryViewModel.refreshCategories();
-        //favoriteListViewModel.refreshFavorites();
+        favoriteListViewModel.refreshFavorites();
     }
 
     /**

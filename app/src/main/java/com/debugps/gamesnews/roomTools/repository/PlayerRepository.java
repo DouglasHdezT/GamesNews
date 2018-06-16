@@ -131,6 +131,7 @@ public class PlayerRepository {
         return  new DisposableSingleObserver<List<PlayerDataApi>>() {
             @Override
             public void onSuccess(List<PlayerDataApi> players) {
+                deleteAllPlayers();
                 for(PlayerDataApi player: players){
                     insertPlayer(new Player(
                             player.get_id(),

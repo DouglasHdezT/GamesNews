@@ -2,6 +2,7 @@ package com.debugps.gamesnews.fragment;
 
 import android.content.Context;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.design.widget.Snackbar;
@@ -27,6 +28,8 @@ public class RecyclerViewFragment extends Fragment {
 
     private MainTools mainTools;
 
+    private View view;
+
     public RecyclerViewFragment() {
     }
 
@@ -40,7 +43,7 @@ public class RecyclerViewFragment extends Fragment {
     @Nullable
     @Override
     public View onCreateView(@NonNull LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
-        View view = inflater.inflate(R.layout.main_recycler_view_layout, container, false);
+        view = inflater.inflate(R.layout.main_recycler_view_layout, container, false);
 
         switch (type_of_manager){
             case 1:
@@ -82,8 +85,23 @@ public class RecyclerViewFragment extends Fragment {
         return new SwipeRefreshLayout.OnRefreshListener() {
             @Override
             public void onRefresh() {
-               mainTools.refreshAll();
-               refreshLayout.setRefreshing(false);
+                if(mainTools.isNetworkAvailable()){
+                    mainTools.refreshAll();
+                    new CountDownTimer(1500, 1000) {
+                        @Override
+                        public void onTick(long millisUntilFinished) {
+
+                        }
+
+                        @Override
+                        public void onFinish() {
+                            refreshLayout.setRefreshing(false);
+                        }
+                    }.start();
+                }else {
+                    refreshLayout.setRefreshing(false);
+                    Snackbar.make(view,R.string.no_net,Snackbar.LENGTH_SHORT).show();
+                }
             }
         };
     }
