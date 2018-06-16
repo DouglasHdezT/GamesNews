@@ -13,6 +13,7 @@ public interface MainTools {
     void refreshAll();
     void showNewDialog(New new_var);
     void showPlayerDialog(Player player);
+    void showGaleryDialog(String url);
     void setFavorited(String id);
     void unsetFavorited(String id);
     void logoutUser();

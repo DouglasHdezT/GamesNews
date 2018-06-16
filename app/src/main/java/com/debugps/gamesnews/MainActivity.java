@@ -29,6 +29,7 @@ import android.widget.Toast;
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
+import com.debugps.gamesnews.dialogs.GalleryDialog;
 import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.dialogs.PlayerDialog;
 import com.debugps.gamesnews.fragment.ConfigFragment;
@@ -517,6 +518,12 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     public void showPlayerDialog(Player player) {
        PlayerDialog dialog= PlayerDialog.newInstance(player);
        dialog.show(MainActivity.this.getSupportFragmentManager(), "Dialogo");
+    }
+
+    @Override
+    public void showGaleryDialog(String url) {
+        GalleryDialog dialog = GalleryDialog.newInstance(url);
+        dialog.show(MainActivity.this.getSupportFragmentManager(), "Dialogo");
     }
 
     /**

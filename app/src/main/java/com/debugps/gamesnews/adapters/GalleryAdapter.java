@@ -41,10 +41,17 @@ public class GalleryAdapter extends RecyclerView.Adapter<GalleryAdapter.GalleryV
     }
 
     @Override
-    public void onBindViewHolder(@NonNull GalleryAdapter.GalleryViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull GalleryAdapter.GalleryViewHolder holder, final int position) {
         Picasso.get().load(image_list.get(position))
                 .error(R.drawable.ic_game_white)
                 .into(holder.cover);
+
+        holder.cover.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                tools.showGaleryDialog(image_list.get(position));
+            }
+        });
     }
 
     @Override
