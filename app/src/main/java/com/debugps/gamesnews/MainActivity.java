@@ -31,6 +31,7 @@ import com.debugps.gamesnews.api.controler.GamesNewsApi;
 import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.dialogs.PlayerDialog;
+import com.debugps.gamesnews.fragment.ConfigFragment;
 import com.debugps.gamesnews.fragment.NewsPerGameFragment;
 import com.debugps.gamesnews.fragment.RecyclerViewFragment;
 import com.debugps.gamesnews.interfaces.MainTools;
@@ -342,6 +343,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
                         //Log.d("Name", "Fav");
                         break;
                     case R.id.drawer_menu_settings:
+                        setUpMainFragment(new ConfigFragment());
                         toolbar.setTitle(R.string.main_menu_settings);
                         //Log.d("Name", "Settings");
                         break;

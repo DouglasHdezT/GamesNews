@@ -3,7 +3,7 @@
     <string name="app_title">Games News</string>
     <string name="app_slogan">Keep alert</string>
     <string name="username_login">Username</string>
-    <string name="password_login">Password</string>
+    <string name="password_login">Old Password</string>
     <string name="sign_in_login">Sign in</string>
     <string name="error_login_connect">We cannot load your sesion</string>
     <string name="main_menu_drawer_option">Drawer_option</string>
@@ -37,4 +37,9 @@
     <string name="reset_password_config">RESET PASSWORD</string>
     <string name="repeat_password_text">Repeat password</string>
     <string name="submit_btn_text">SUBMIT</string>
+    <string name="new_password_config">New Password</string>
+    <string name="no_net">No network founded</string>
+    <string name="current_pass_error">Current Password Incorrect</string>
+    <string name="empty_fields_error">Empty fields</string>
+    <string name="mismatch_error">Mismatch passwords</string>
 </resources>
