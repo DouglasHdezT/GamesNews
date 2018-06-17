@@ -38,7 +38,7 @@
     <string name="new_password_config">Contraseña nueva</string>
     <string name="submit_btn_text">ENVIAR</string>
     <string name="repeat_password_text">Repetir Contraseña</string>
-    <string name="reset_password_config">CAMCIAR CONTRASEÑA</string>
+    <string name="reset_password_config">CAMBIAR CONTRASENA</string>
     <string name="default_name">Autentificacion requerida</string>
     <string name="default_email">xxxxxxxxx@xxxxxxxxx.xxxx</string>
     <string name="token_rip_message">Sesion Espirada</string>

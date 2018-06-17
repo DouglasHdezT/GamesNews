@@ -28,7 +28,6 @@ import android.widget.Toast;
 
 import com.debugps.gamesnews.adapters.MainAdapter;
 import com.debugps.gamesnews.api.controler.GamesNewsApi;
-import com.debugps.gamesnews.api.data.TokenAcceso;
 import com.debugps.gamesnews.dialogs.GalleryDialog;
 import com.debugps.gamesnews.dialogs.NewsDialog;
 import com.debugps.gamesnews.dialogs.PlayerDialog;
@@ -129,8 +128,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         setResourcesUp();
         setAdaptersUp();
 
-        Log.d("token", token_var);
-
         gamesNewsApi = createGamesNewApi();
 
         setViewModelsUp();
@@ -173,7 +170,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             public void onChanged(@Nullable List<FavoriteList> favoriteLists) {
                 if (favoriteLists != null) {
                     for(int i=0; i < favoriteLists.size(); i++){
-                        Log.d("for", favoriteLists.get(i).getId());
                         newViewModel.setFav(favoriteLists.get(i).getId());
                     }
                 }

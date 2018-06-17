@@ -130,7 +130,7 @@ public class UserRepository {
                         Request newRequest = builder.build();
 
                         Response response = chain.proceed(newRequest);
-                        Log.d("asd",response.body().string());
+
                         if(response.code() == 401){
                             Log.d("asd",MainActivity.token_var);
                             tools.resetToken();
