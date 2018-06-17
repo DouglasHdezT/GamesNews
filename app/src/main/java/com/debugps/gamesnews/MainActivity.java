@@ -79,7 +79,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
     private static final Random rn = new Random();
 
     public static int IN_REFRESH = 0;
-    public static int IN_SEARCH = 0;
+    private static int CURRENT_NAV = R.id.drawer_menu_news;
 
     private Toolbar toolbar;
     private DrawerLayout drawerLayout;
@@ -116,12 +116,14 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        TokenAcceso token = getIntent().getParcelableExtra(LoginActivity.SHARED_TOKEN_KEY);
+        if(savedInstanceState != null){
+            CURRENT_NAV = savedInstanceState.getInt("Nav");
+        }
 
-        if(token ==  null){
+        token_var = getApplicationContext().getSharedPreferences("Shared",Context.MODE_PRIVATE).getString(LoginActivity.SHARED_TOKEN_KEY, "");
+
+        if(token_var.equals("")){
             startActivity(new Intent(MainActivity.this, LoginActivity.class));
-        }else{
-            token_var = token.getToken();
         }
 
         setResourcesUp();
@@ -138,11 +140,6 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         }else{
             Toast.makeText(this,"Sin inter", Toast.LENGTH_SHORT).show();
         }
-
-        toolbar.setTitle(R.string.main_menu_title);
-        FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-        ft.replace(R.id.main_activity_frame_layout, RecyclerViewFragment.newInstance(mainAdapter, 1));
-        ft.commit();
     }
 
     /**
@@ -220,6 +217,8 @@ public class MainActivity extends AppCompatActivity implements MainTools {
             }
         });
 
+        MenuItem item = navigationView.getMenu().findItem(CURRENT_NAV);
+        setNavigationFragment(item);
     }
 
     /**
@@ -267,6 +266,18 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         });
 
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putInt("Nav", CURRENT_NAV);
+    }
+
+    @Override
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+        CURRENT_NAV = savedInstanceState.getInt("Nav");
     }
 
     /**
@@ -346,42 +357,55 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         navigationView.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+
                 if(item.isChecked()){
                     return true;
                 }
-                drawerLayout.closeDrawers();
-                switch (item.getItemId()){
-                    case R.id.drawer_menu_news:
-                        setUpMainFragment(RecyclerViewFragment.newInstance(mainAdapter, 1));
-                        toolbar.setTitle(R.string.main_menu_title);
-                        //Log.d("Name", "News");
-                        break;
-                    case R.id.drawer_menu_fav:
-                        setUpMainFragment(RecyclerViewFragment.newInstance(favoritesAdapter, 2));
-                        toolbar.setTitle(R.string.main_menu_fav);
-                        //Log.d("Name", "Fav");
-                        break;
-                    case R.id.drawer_menu_settings:
-                        setUpMainFragment(new ConfigFragment());
-                        toolbar.setTitle(R.string.main_menu_settings);
-                        //Log.d("Name", "Settings");
-                        break;
-                    case R.id.drawer_menu_exit:
-                        logoutUser();
-                        break;
-                    default:
-                        for(int i=0; i<games_names.size(); i++){
-                            if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
-                                toolbar.setTitle(styled_names.get(i));
-                                setUpMainFragment(NewsPerGameFragment.newInstance(games_names.get(i)));
-                                //Log.d("Name", games_names.get(i));
-                            }
-                        }
-                        break;
-                }
+
+                setNavigationFragment(item);
+
                 return true;
             }
         });
+    }
+
+    public boolean setNavigationFragment(MenuItem item){
+        drawerLayout.closeDrawers();
+        item.setChecked(true);
+        switch (item.getItemId()){
+            case R.id.drawer_menu_news:
+                setUpMainFragment(RecyclerViewFragment.newInstance(mainAdapter, 1));
+                toolbar.setTitle(R.string.main_menu_title);
+                CURRENT_NAV = item.getItemId();
+                //Log.d("Name", "News");
+                break;
+            case R.id.drawer_menu_fav:
+                setUpMainFragment(RecyclerViewFragment.newInstance(favoritesAdapter, 2));
+                toolbar.setTitle(R.string.main_menu_fav);
+                CURRENT_NAV = item.getItemId();
+                //Log.d("Name", "Fav");
+                break;
+            case R.id.drawer_menu_settings:
+                setUpMainFragment(new ConfigFragment());
+                toolbar.setTitle(R.string.main_menu_settings);
+                CURRENT_NAV = item.getItemId();
+                //Log.d("Name", "Settings");
+                break;
+            case R.id.drawer_menu_exit:
+                logoutUser();
+                break;
+            default:
+                for(int i=0; i<games_names.size(); i++){
+                    if(item.getItemId() == ID_ITEM_MENU_GAMES+i){
+                        toolbar.setTitle(styled_names.get(i));
+                        setUpMainFragment(NewsPerGameFragment.newInstance(games_names.get(i)));
+                        CURRENT_NAV = item.getItemId();
+                        //Log.d("Name", games_names.get(i));
+                    }
+                }
+                break;
+        }
+        return true;
     }
 
     /**
@@ -590,6 +614,7 @@ public class MainActivity extends AppCompatActivity implements MainTools {
         categoryViewModel.deleteAllCategories();
         favoriteListViewModel.deleteAllFavNews();
         userViewModel.deleteAll();
+        CURRENT_NAV = R.id.drawer_menu_news;
         MainActivity.this.getApplicationContext()
                 .getSharedPreferences("Shared",Context.MODE_PRIVATE)
                 .edit().clear().commit();

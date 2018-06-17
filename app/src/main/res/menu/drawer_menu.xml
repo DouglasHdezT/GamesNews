@@ -4,7 +4,6 @@
     <group android:checkableBehavior="single">
         <item
             android:icon="@drawable/ic_newspaper"
-            android:checked="true"
             android:id="@+id/drawer_menu_news"
             android:title="@string/drawer_menu_news"/>
         <item
